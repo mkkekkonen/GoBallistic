@@ -22,7 +22,7 @@ public class Target extends AbstractCollidableGameObject {
 	
 	@Override
 	public void update(float deltaTime) {
-//		super.update(deltaTime);
+		super.update(deltaTime);
 	}
 
 	@Override

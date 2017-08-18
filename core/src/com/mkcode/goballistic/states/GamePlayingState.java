@@ -82,6 +82,9 @@ public class GamePlayingState extends AbstractState {
 			this.checkBulletCollision();
 		}
 		
+		this.debugSmallTarget.update(deltaTime);
+		this.debugLargeTarget.update(deltaTime);
+		
 		float yCoord = Constants.WND_HEIGHT - Gdx.input.getY();
 		if(Gdx.input.isTouched()) {
 			if(this.angleInput.getRect().containsPoint(Gdx.input.getX(), yCoord) && !ANGLE_INPUT_SHOWN) {
