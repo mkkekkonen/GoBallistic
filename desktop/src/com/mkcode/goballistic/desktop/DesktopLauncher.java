@@ -8,8 +8,8 @@ import com.mkcode.goballistic.util.Constants;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = Constants.WIDTH;
-		config.height = Constants.HEIGHT;
+		config.width = Constants.WND_WIDTH;
+		config.height = Constants.WND_HEIGHT;
 		new LwjglApplication(new GoBallistic(), config);
 	}
 }
