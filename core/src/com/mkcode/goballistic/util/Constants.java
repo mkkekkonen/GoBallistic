@@ -6,6 +6,7 @@ public class Constants {
 
 	public static final int
 			BARREL_LENGTH = 40,
+			BULLET_DIM = 10,
 			BULLET_WEIGHT = 2,
 			BUTTON_DIM = 60,
 			CONTROLS_AREA_HEIGHT = 11,

@@ -60,6 +60,12 @@ public class Rect {
 		};
 	}
 	
+	@Override
+	public String toString() {
+		return "Rect ~ X: " + this.bottomLeft.getX() + " Y: " + this.bottomLeft.getY() +
+				" W: " + this.w + " H: " + this.h;
+	}
+	
 	public Vector2 getBottomLeft() {
 		return bottomLeft;
 	}

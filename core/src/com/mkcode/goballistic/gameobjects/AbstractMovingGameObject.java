@@ -1,33 +1,32 @@
 package com.mkcode.goballistic.gameobjects;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mkcode.goballistic.components.Velocity;
+import com.mkcode.goballistic.math.Rect;
 import com.mkcode.goballistic.math.Vector2;
 
-public abstract class AbstractMovingGameObject extends AbstractGameObject {
+public abstract class AbstractMovingGameObject extends AbstractCollidableGameObject {
 
-	protected Vector2 location;
 	protected Velocity velocity;
 	
-	protected AbstractMovingGameObject(float x, float y, float mass, String fileName) {
-		super(x, y, fileName);
-		this.location = new Vector2(x, y);
+	protected AbstractMovingGameObject(float x, float y, float width, float height, float mass, String fileName) {
+		super(x, y, width, height, fileName);
 		this.velocity = new Velocity(mass);
 	}
 
 	@Override
 	public void update(float deltaTime) {
 		this.velocity.update(deltaTime);
-		this.location = this.location.add(
-				this.velocity.getVelocity().mul(deltaTime)
+		this.rect.setBottomLeft(
+				this.rect.getBottomLeft().add(
+						this.velocity.getVelocity().mul(deltaTime)
+				)
 		);
 	}
 	
-	public Vector2 getLocation() {
-		return location;
-	}
-
-	public void setLocation(Vector2 location) {
-		this.location = location;
+	@Override
+	public void render(SpriteBatch batch) {
+		batch.draw(texture, rect.getX(), rect.getY());
 	}
 
 	public Velocity getVelocity() {

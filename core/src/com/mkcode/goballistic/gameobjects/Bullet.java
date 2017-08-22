@@ -13,9 +13,12 @@ public class Bullet extends AbstractMovingGameObject {
 	Circle circle;
 	
 	public Bullet(float x, float y, float angle, float force, float mass) {
-		super((int)x, (int)y, mass, "bullet.png");
+		super(x, y, Constants.BULLET_DIM, Constants.BULLET_DIM, mass, "bullet.png");
 		this.circle = new Circle(x, y, 5);
-		this.velocity = new Velocity(angle, force, mass);
+//		this.velocity = new Velocity(angle, force, mass);
+		this.velocity = new Velocity(mass);
+		Vector2 initialAcceleration = Vector2.polar(angle, force / mass);
+		velocity.setVelocity(velocity.getVelocity().add(initialAcceleration));
 	}
 
 	@Override
@@ -37,12 +40,10 @@ public class Bullet extends AbstractMovingGameObject {
 		);
 	}
 	
-	@Override
 	public Vector2 getLocation() {
 		return new Vector2(this.circle.getX(), this.circle.getY());
 	}
 	
-	@Override
 	public void setLocation(Vector2 location) {
 		this.circle.setCenterPoint(location);
 	}

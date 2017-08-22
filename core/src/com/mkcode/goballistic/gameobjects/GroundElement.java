@@ -11,7 +11,7 @@ public class GroundElement extends AbstractCollidableGameObject {
 	}
 	
 	public GroundElement(float x, float y) {
-		super(x, y, Constants.GROUND_ELEMENT_WIDTH, Constants.GROUND_ELEMENT_WIDTH, 0, "ground.png");
+		super(x, y, Constants.GROUND_ELEMENT_WIDTH, Constants.GROUND_ELEMENT_WIDTH, "ground.png");
 	}
 	
 	@Override

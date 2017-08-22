@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.mkcode.goballistic.components.Location;
 import com.mkcode.goballistic.managers.FontManager;
 import com.mkcode.goballistic.math.Rect;
 import com.mkcode.goballistic.math.Vector2;

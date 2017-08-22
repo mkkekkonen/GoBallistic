@@ -8,19 +8,21 @@ public class Velocity {
 	private Vector2 velocity;
 	private float mass;
 	
+	/**
+	 * Initialize velocity to 0,0, also initialize mass
+	 * @param mass float the mass of the object
+	 */
 	public Velocity(float mass) {
-		this.velocity = new Vector2();
+		this.velocity = new Vector2(); // initialize velocity to 0,0
 		this.mass = mass;
 	}
 	
-	public Velocity(float angle, float force, float mass) {
-		this(mass);
-		Vector2 initialAcceleration = Vector2.polar(angle, force / mass);
-		velocity = velocity.add(initialAcceleration);
-	}
-	
+	/**
+	 * Default update method, add gravity to the velocity
+	 * @param deltaTime float frame time
+	 */
 	public void update(float deltaTime) {
-		velocity = velocity.add(Constants.GRAVITY);
+		velocity = velocity.add(Constants.GRAVITY); // add gravity to the velocity
 	}
 	
 	public Vector2 getVelocity() {

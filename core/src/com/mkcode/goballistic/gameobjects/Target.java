@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mkcode.goballistic.math.MToPx;
 import com.mkcode.goballistic.util.Constants;
 
-public class Target extends AbstractCollidableGameObject {
+public class Target extends AbstractMovingGameObject {
 
 	TargetSize targetSize;
 	
@@ -30,30 +30,30 @@ public class Target extends AbstractCollidableGameObject {
 		if(this.targetSize == TargetSize.SMALL) {
 			batch.draw(
 					this.texture, 
-					MToPx.mToPx(this.location.getX()) - this.rect.getW() / 2, 
-					MToPx.mToPx(this.location.getY()) - this.rect.getH() / 2
+					MToPx.mToPx(this.rect.getX()), 
+					MToPx.mToPx(this.rect.getY())
 			);
 		}
 		else if(this.targetSize == TargetSize.LARGE) {
 			batch.draw( // top left
 					this.texture, 
-					MToPx.mToPx(this.location.getX()) - this.rect.getW() / 2, 
-					MToPx.mToPx(this.location.getY()) - this.rect.getH() / 2
+					MToPx.mToPx(this.rect.getX()), 
+					MToPx.mToPx(this.rect.getY()) + this.rect.getH() / 2
 			);
 			batch.draw( // top right
 					this.texture, 
-					MToPx.mToPx(this.location.getX()), 
-					MToPx.mToPx(this.location.getY()) - this.rect.getH() / 2
+					MToPx.mToPx(this.rect.getX()) + this.rect.getW() / 2, 
+					MToPx.mToPx(this.rect.getY()) + this.rect.getH() / 2
 			);
 			batch.draw( // bottom left
 					this.texture, 
-					MToPx.mToPx(this.location.getX()) - this.rect.getW() / 2, 
-					MToPx.mToPx(this.location.getY())
+					MToPx.mToPx(this.rect.getX()), 
+					MToPx.mToPx(this.rect.getY())
 			);
 			batch.draw( // bottom right
 					this.texture, 
-					MToPx.mToPx(this.location.getX()), 
-					MToPx.mToPx(this.location.getY())
+					MToPx.mToPx(this.rect.getX()) + this.rect.getW() / 2, 
+					MToPx.mToPx(this.rect.getY())
 			);
 		}
 	}
