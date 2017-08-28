@@ -43,7 +43,7 @@ public class GamePlayingState extends AbstractState {
 		super(fontManager);
 		this.ground = GroundGenerator.generateGround();
 		this.turret = new Turret();
-		this.debugSmallTarget = new Target(30, 30, TargetSize.SMALL);
+		this.debugSmallTarget = new Target(30, 47, TargetSize.SMALL);
 		this.debugLargeTarget = new Target(40, 40, TargetSize.LARGE);
 		this.controlsBackground = new ControlsBackground(0, 0);
 		this.angleInput = new NumberInput(
@@ -82,8 +82,19 @@ public class GamePlayingState extends AbstractState {
 			this.checkBulletCollision();
 		}
 		
-		this.debugSmallTarget.update(deltaTime);
-		this.debugLargeTarget.update(deltaTime);
+		if(this.debugSmallTarget.getBottomLeft().getY() < 0) {
+			this.debugSmallTarget.dispose();
+			this.debugSmallTarget = null;
+		}
+		if(this.debugLargeTarget.getBottomLeft().getY() < 0) {
+			this.debugLargeTarget.dispose();
+			this.debugLargeTarget = null;
+		}
+		
+		if(this.debugSmallTarget != null)
+			this.debugSmallTarget.update(deltaTime, ground);
+		if(this.debugLargeTarget != null)
+			this.debugLargeTarget.update(deltaTime, ground);
 		
 		float yCoord = Constants.WND_HEIGHT - Gdx.input.getY();
 		if(Gdx.input.isTouched()) {
@@ -123,8 +134,6 @@ public class GamePlayingState extends AbstractState {
 		this.forceInput.render(batch);
 		this.labelFont.draw(batch, Resources.tr("angle"), Constants.LABEL_OFFSET_X, 85);
 		this.labelFont.draw(batch, Resources.tr("force"), Constants.LABEL_OFFSET_X, 35);
-		this.labelFont.draw(batch, "Top: " + TOP, 50, 450);
-		this.labelFont.draw(batch, "Left: " + LEFT, 50, 400);
 		this.button.render(batch);
 	}
 	

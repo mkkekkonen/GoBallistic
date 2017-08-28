@@ -18,19 +18,26 @@ public class Rect {
 	}
 	
 	public boolean containsPoint(Vector2 point) {
-		if(point.getX() >= bottomLeft.getX() && point.getX() <= bottomLeft.getX() + w
-				&& point.getY() >= bottomLeft.getY() && point.getY() <= bottomLeft.getY() + h)
+		if(point.getX() >= this.getX() && point.getX() <= this.getX() + w
+				&& point.getY() >= this.getY() && point.getY() <= this.getY() + h)
 			return true;
 		return false;
 	}
 	
 	public boolean containsPoint(float x, float y) {
-		if(x >= bottomLeft.getX() && x <= bottomLeft.getX() + w
-				&& y >= bottomLeft.getY() && y <= bottomLeft.getY() + h)
+		if(x >= this.getX() && x <= this.getX() + w
+				&& y >= this.getY() && y <= this.getY() + h)
 			return true;
 		return false;
 	}
 
+	public boolean intersectsRect(Rect rect) {
+		return this.getX() <= rect.getX() + rect.getW()
+				&& this.getX() + this.getW() >= rect.getX()
+				&& this.getY() <= rect.getY() + rect.getH()
+				&& this.getY() + this.getH() >= rect.getY();
+	}
+	
 	public Line[] getBounds() {
 		return new Line[] {
 				new Line( // top

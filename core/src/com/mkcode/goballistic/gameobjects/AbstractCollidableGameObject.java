@@ -3,7 +3,7 @@ package com.mkcode.goballistic.gameobjects;
 import com.mkcode.goballistic.math.Rect;
 import com.mkcode.goballistic.math.Vector2;
 
-public class AbstractCollidableGameObject extends AbstractGameObject {
+public abstract class AbstractCollidableGameObject extends AbstractGameObject {
 
 	protected Rect rect;
 
