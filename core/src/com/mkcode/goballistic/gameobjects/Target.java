@@ -50,12 +50,13 @@ public class Target extends AbstractMovingGameObject {
 		
 		Integer[][] groundElementMatrix = ground.getGroundElementMatrix();
 		int yCoord = calcGroundYCoord(this.rect.getY());
-		System.out.println("yCoord: " + yCoord);
 		int smallestY = 100;
 		boolean collision = false;
 		for(int x : collisionColumns) {
 			for(int y = 0; y <= yCoord; y++) {
-				if(groundElementMatrix[y][x] == 1) {
+				if(x >= 0 && x < Constants.GROUND_WIDTH // check that x and y are inside the bounds of the matrix
+						&& y >= 0 && y < Constants.MAX_GROUND_HEIGHT
+						&& groundElementMatrix[y][x] == 1) {
 					collision = true;
 					this.velocity.setVelocity(new Vector2());
 					if(y < smallestY)

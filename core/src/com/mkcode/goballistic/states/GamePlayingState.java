@@ -72,8 +72,8 @@ public class GamePlayingState extends AbstractState {
 	@Override
 	public void update(float deltaTime) {
 		if(this.bullet != null) {
-			if(bullet.getLocation().getX() > Constants.WND_WIDTH 
-					|| bullet.getLocation().getY() <= MToPx.mToPx(Constants.CONTROLS_AREA_HEIGHT)) {
+			if(bullet.getLocation().getX() > Constants.WND_ELE_WIDTH 
+					|| bullet.getLocation().getY() <= Constants.CONTROLS_AREA_HEIGHT) {
 				System.out.println("Location: " + bullet.getLocation());
 				this.bullet.dispose();
 				this.bullet = null;
@@ -108,8 +108,8 @@ public class GamePlayingState extends AbstractState {
 				FIRING = true;
 				float[] barrelEndCoords = this.sineBulletLocation(this.angleInput.getValue());
 				this.bullet = new Bullet(
-						barrelEndCoords[0] + MToPx.mToPx(Constants.TURRET_OFFSET + Constants.TURRET_WIDTH / 2), 
-						barrelEndCoords[1] + MToPx.mToPx(GroundGenerator.getTurretLevel()),
+						barrelEndCoords[0] + Constants.TURRET_OFFSET + Constants.TURRET_WIDTH / 2, 
+						barrelEndCoords[1] + GroundGenerator.getTurretLevel(),
 						this.angleInput.getValue(), 
 						this.forceInput.getValue(),
 						Constants.BULLET_WEIGHT
@@ -174,10 +174,10 @@ public class GamePlayingState extends AbstractState {
 		double x, y;
 		
 		// law of sines
-		y = Math.sin(Math.toRadians(angle)) * (30 / Math.sin(Math.toRadians(90)));
+		y = Math.sin(Math.toRadians(angle)) * (3 / Math.sin(Math.toRadians(90)));
 		
 		// Pythagorean theorem
-		double xPow2 = (Math.pow(30, 2) - Math.pow(y, 2));
+		double xPow2 = (Math.pow(3, 2) - Math.pow(y, 2));
 		x = Math.sqrt(xPow2);
 		
 		return new float[] { (float)x, (float)y };
@@ -195,11 +195,12 @@ public class GamePlayingState extends AbstractState {
 					bulletLocation.getX(), 
 					bulletLocation.getY()
 			);
+			System.out.println(this.bullet.getCircle());
 			// calculate bullet bounds
-			TOP = top = (int)Math.floor((newBulletLocation.getY() + 5) / 10) - 10;
-			right = (int)Math.floor((newBulletLocation.getX() + 5) / 10);
-			bottom = (int)Math.floor((newBulletLocation.getY() - 5) / 10) - 10;
-			LEFT = left = (int)Math.floor((newBulletLocation.getX() - 5) / 10);
+			TOP = top = (int)Math.floor(newBulletLocation.getY() + 0.5) - (Constants.CONTROLS_AREA_HEIGHT - 1);
+			right = (int)Math.floor(newBulletLocation.getX() + 0.5);
+			bottom = (int)Math.floor(newBulletLocation.getY() - 0.5) - (Constants.CONTROLS_AREA_HEIGHT - 1);
+			LEFT = left = (int)Math.floor(newBulletLocation.getX() - 0.5);
 			// check "squares" the bullet is in
 			checkBulletGroundElementCollision(left, top);
 			checkBulletGroundElementCollision(right, top);

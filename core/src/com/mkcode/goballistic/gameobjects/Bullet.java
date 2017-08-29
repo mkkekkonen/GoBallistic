@@ -14,7 +14,7 @@ public class Bullet extends AbstractMovingGameObject {
 	
 	public Bullet(float x, float y, float angle, float force, float mass) {
 		super(x, y, Constants.BULLET_DIM, Constants.BULLET_DIM, mass, "bullet.png");
-		this.circle = new Circle(x, y, 5);
+		this.circle = new Circle(x, y, 5, true);
 //		this.velocity = new Velocity(angle, force, mass);
 		this.velocity = new Velocity(mass);
 		Vector2 initialAcceleration = Vector2.polar(angle, force / mass);
@@ -35,8 +35,8 @@ public class Bullet extends AbstractMovingGameObject {
 	public void render(SpriteBatch batch) {
 		batch.draw(
 				this.texture, 
-				this.circle.getCenterPoint().getX() - this.texture.getWidth() / 2, 
-				this.circle.getCenterPoint().getY() + this.texture.getHeight() / 2
+				MToPx.mToPx(this.circle.getCenterPoint().getX()) - this.texture.getWidth() / 2, 
+				MToPx.mToPx(this.circle.getCenterPoint().getY()) + this.texture.getHeight() / 2
 		);
 	}
 	

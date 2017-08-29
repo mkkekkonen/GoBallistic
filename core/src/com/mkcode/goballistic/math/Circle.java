@@ -5,8 +5,10 @@ public class Circle {
 	private Vector2 centerPoint;
 	
 	private float radius;
+	private boolean WORLD_COORDS;
 	
-	public Circle(float x, float y, float radius) {
+	public Circle(float x, float y, float radius, boolean worldCoords) {
+		this.WORLD_COORDS = worldCoords;
 		this.centerPoint = new Vector2(x, y);
 		this.radius = radius;
 	}
@@ -34,10 +36,18 @@ public class Circle {
 		
 		// circle at the origin
 		// - set line relative to it
-		x1 -= MToPx.pxToM(this.centerPoint.getX());
-		y1 -= MToPx.pxToM(this.centerPoint.getY());
-		x2 -= MToPx.pxToM(this.centerPoint.getX());
-		y2 -= MToPx.pxToM(this.centerPoint.getY());
+		if(WORLD_COORDS) {
+			x1 -= this.centerPoint.getX();
+			y1 -= this.centerPoint.getY();
+			x2 -= this.centerPoint.getX();
+			y2 -= this.centerPoint.getY();
+		}
+		else {
+			x1 -= MToPx.pxToM(this.centerPoint.getX());
+			y1 -= MToPx.pxToM(this.centerPoint.getY());
+			x2 -= MToPx.pxToM(this.centerPoint.getX());
+			y2 -= MToPx.pxToM(this.centerPoint.getY());
+		}
 		
 		float dx = x2 - x1,
 				dy = y2 - y1,
@@ -59,10 +69,19 @@ public class Circle {
 
 		// circle at the origin
 		// - set line relative to it
-		line.setX1(line.getX1() - MToPx.pxToM(this.centerPoint.getX()));
-		line.setY1(line.getY1() - MToPx.pxToM(this.centerPoint.getY()));
-		line.setX2(line.getX2() - MToPx.pxToM(this.centerPoint.getX()));
-		line.setY2(line.getY2() - MToPx.pxToM(this.centerPoint.getY()));
+		
+		if(WORLD_COORDS) {
+			line.setX1(line.getX1() - this.centerPoint.getX());
+			line.setY1(line.getY1() - this.centerPoint.getY());
+			line.setX2(line.getX2() - this.centerPoint.getX());
+			line.setY2(line.getY2() - this.centerPoint.getY());
+		}
+		else {
+			line.setX1(line.getX1() - MToPx.pxToM(this.centerPoint.getX()));
+			line.setY1(line.getY1() - MToPx.pxToM(this.centerPoint.getY()));
+			line.setX2(line.getX2() - MToPx.pxToM(this.centerPoint.getX()));
+			line.setY2(line.getY2() - MToPx.pxToM(this.centerPoint.getY()));
+		}
 		
 		float dx = line.getX2() - line.getX1(),
 				dy = line.getY2() - line.getY1(),
