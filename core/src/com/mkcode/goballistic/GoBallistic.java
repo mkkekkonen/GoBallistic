@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,6 +20,7 @@ public class GoBallistic extends ApplicationAdapter {
 	Map<String, AbstractState> gameStates;	// dictionary of game states
 	FontManager fontManager;				
 	Resources resources;					// translation
+	Music backgroundTrack;
 
 	public long curTime, prevTime;			// frame/physics timing
 	
@@ -33,6 +35,11 @@ public class GoBallistic extends ApplicationAdapter {
 		
 		fontManager = new FontManager();
 		resources = new Resources(); // translation
+		
+		// music
+		backgroundTrack = Gdx.audio.newMusic(Gdx.files.internal("HeartOfMachine.ogg"));
+		backgroundTrack.setLooping(true);
+		backgroundTrack.play();
 		
 		prevTime = curTime = System.nanoTime();	// initialize frame/physics timing
 		
@@ -67,5 +74,7 @@ public class GoBallistic extends ApplicationAdapter {
 		for(Map.Entry<String, AbstractState> entry : gameStates.entrySet()) // loop through game states
 			entry.getValue().dispose();	// dispose of each game state
 		fontManager.dispose();			// dispose of FontManager
+		backgroundTrack.stop();
+		backgroundTrack.dispose();
 	}
 }

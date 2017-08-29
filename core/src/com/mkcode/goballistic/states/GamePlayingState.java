@@ -1,5 +1,9 @@
 package com.mkcode.goballistic.states;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -30,7 +34,7 @@ public class GamePlayingState extends AbstractState {
 	private NumberInput angleInput, forceInput;
 	private BitmapFont labelFont;
 	private Button button;
-	private Target debugSmallTarget, debugLargeTarget;
+	private List<Target> targetContainer;
 	
 	private int TOP = 0, RIGHT = 0, LEFT = 0, BOTTOM = 0;
 	
@@ -43,8 +47,7 @@ public class GamePlayingState extends AbstractState {
 		super(fontManager);
 		this.ground = GroundGenerator.generateGround();
 		this.turret = new Turret();
-		this.debugSmallTarget = new Target(30, 47, TargetSize.SMALL);
-		this.debugLargeTarget = new Target(40, 40, TargetSize.LARGE);
+		this.generateTargets();
 		this.controlsBackground = new ControlsBackground(0, 0);
 		this.angleInput = new NumberInput(
 				this.turret,
@@ -82,19 +85,14 @@ public class GamePlayingState extends AbstractState {
 			this.checkBulletCollision();
 		}
 		
-		if(this.debugSmallTarget.getBottomLeft().getY() < 0) {
-			this.debugSmallTarget.dispose();
-			this.debugSmallTarget = null;
+		for(Target target : this.targetContainer) {
+			if(target.getBottomLeft().getY() < 0) {
+				target.dispose();
+				target = null;
+			}
+			if(target != null)
+				target.update(deltaTime, this.ground);
 		}
-		if(this.debugLargeTarget.getBottomLeft().getY() < 0) {
-			this.debugLargeTarget.dispose();
-			this.debugLargeTarget = null;
-		}
-		
-		if(this.debugSmallTarget != null)
-			this.debugSmallTarget.update(deltaTime, ground);
-		if(this.debugLargeTarget != null)
-			this.debugLargeTarget.update(deltaTime, ground);
 		
 		float yCoord = Constants.WND_HEIGHT - Gdx.input.getY();
 		if(Gdx.input.isTouched()) {
@@ -127,8 +125,8 @@ public class GamePlayingState extends AbstractState {
 		this.turret.render(batch);
 		if(this.bullet != null)
 			this.bullet.render(batch);
-		this.debugSmallTarget.render(batch);
-		this.debugLargeTarget.render(batch);
+		for(Target target : this.targetContainer)
+			target.render(batch);
 		this.controlsBackground.render(batch);
 		this.angleInput.render(batch);
 		this.forceInput.render(batch);
@@ -148,6 +146,27 @@ public class GamePlayingState extends AbstractState {
 		this.angleInput.dispose();
 		this.forceInput.dispose();
 		this.button.dispose();
+	}
+	
+	private void generateTargets() {
+		this.targetContainer = new ArrayList<Target>();
+		Random random = new Random(System.currentTimeMillis());
+		for(int i = 0; i < Constants.SMALL_TARGET_AMOUNT; i++)
+			this.targetContainer.add(generateTarget(TargetSize.SMALL, random));
+		for(int i = 0; i < Constants.LARGE_TARGET_AMOUNT; i++)
+			this.targetContainer.add(generateTarget(TargetSize.LARGE, random));
+	}
+	
+	private Target generateTarget(TargetSize size, Random random) {
+		float x = random.nextFloat() * Constants.WND_ELE_WIDTH / 2;
+		x += (Constants.WND_ELE_WIDTH / 2);
+		x -= (size == TargetSize.SMALL ? Constants.SMALL_TARGET_DIM : Constants.LARGE_TARGET_DIM);
+		float y = random.nextFloat() * (Constants.WND_ELE_HEIGHT 
+				- Constants.MAX_GROUND_HEIGHT 
+				- Constants.CONTROLS_AREA_HEIGHT
+				- (size == TargetSize.SMALL ? Constants.SMALL_TARGET_DIM : Constants.LARGE_TARGET_DIM));
+		y += (Constants.MAX_GROUND_HEIGHT + Constants.CONTROLS_AREA_HEIGHT);
+		return new Target(x, y, size);
 	}
 	
 	private float[] sineBulletLocation(float angle) {
@@ -194,21 +213,17 @@ public class GamePlayingState extends AbstractState {
 		System.out.println("X: " + x + " Y: " + y);
 		if(bullet != null && y >= 0 && y < Constants.MAX_GROUND_HEIGHT && x >= 0 && x < Constants.GROUND_WIDTH) {
 			int yCoord = Constants.MAX_GROUND_HEIGHT - 1 - y;
-			System.out.println(this.bullet.getCircle());
 			if(groundElementMatrix[yCoord][x] == 1) { // ground element found in this location
 				GroundElement groundElement = new GroundElement(x, y);
 				Line[] eleBounds = groundElement.getRect().getBounds();
 				for(Line line : eleBounds) {
-					System.out.print(line);
 					if(this.bullet.getCircle().lineIntersects(line)) {
-						System.out.println(" COLLISION");
 						groundElementMatrix[yCoord][x] = 0;
 						this.bullet.dispose();
 						this.bullet = null;
 						FIRING = false;
 						break;
 					}
-					System.out.println(" no collision");
 				}
 			}
 		}

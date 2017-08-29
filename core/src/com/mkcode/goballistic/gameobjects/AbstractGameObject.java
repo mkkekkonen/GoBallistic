@@ -9,18 +9,16 @@ import com.mkcode.goballistic.math.Vector2;
 public abstract class AbstractGameObject {
 
 	protected Vector2 
-		bottomLeft,
-		bottomLeftPixels;
+		bottomLeft;
 	protected Texture texture;
 	
 	protected AbstractGameObject(float x, float y, String fileName) {
 		texture = new Texture(Gdx.files.internal(fileName));
 		bottomLeft = new Vector2(x, y);
-		bottomLeftPixels = MToPx.mToPx(bottomLeft);
 	}
 	
 	public void render(SpriteBatch batch) {
-		batch.draw(texture, bottomLeftPixels.getX(), bottomLeftPixels.getY());
+		batch.draw(texture, MToPx.mToPx(bottomLeft.getX()), MToPx.mToPx(bottomLeft.getY()));
 	}
 	
 	public void update(float deltaTime) {
@@ -37,6 +35,5 @@ public abstract class AbstractGameObject {
 
 	public void setBottomLeft(Vector2 bottomLeft) {
 		this.bottomLeft = bottomLeft;
-		this.bottomLeftPixels = MToPx.mToPx(bottomLeft);
 	}
 }
