@@ -3,7 +3,7 @@ package com.mkcode.goballistic.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mkcode.goballistic.managers.FontManager;
+import com.mkcode.goballistic.fonts.FontManager;
 import com.mkcode.goballistic.util.Constants;
 
 public abstract class AbstractState {

@@ -6,12 +6,12 @@ public class Constants {
 
 	public static final int
 			BARREL_LENGTH = 40,
-			BULLET_DIM = 10,
+			BULLET_DIM = 1,
 			BULLET_WEIGHT = 7,
 			BUTTON_DIM = 60,
 			CONTROLS_AREA_HEIGHT = 11,
 			GAME_AREA_HEIGHT = 37,
-			GROUND_ELEMENT_WIDTH = 10,
+			GROUND_ELEMENT_WIDTH = 1,
 			GROUND_TOP_OFFSET = 6,
 			GROUND_WIDTH = 64,
 			LABEL_OFFSET_X = 225,
@@ -36,6 +36,9 @@ public class Constants {
 			WND_ELE_WIDTH = 64,
 			WND_HEIGHT = 480,
 			WND_WIDTH = 640;
+	
+	public static final float
+			BULLET_R = 0.5f;
 	
 	public static final String
 			ASSETS_DIR = "assets/";

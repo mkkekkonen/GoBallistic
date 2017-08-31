@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.mkcode.goballistic.managers.FontManager;
+import com.mkcode.goballistic.fonts.FontManager;
 import com.mkcode.goballistic.util.Constants;
 
 public class GroundGenerator {

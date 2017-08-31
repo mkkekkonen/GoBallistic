@@ -22,53 +22,52 @@ public class Circle {
 		// (x_p - x_c)^2 + (y_p - y_c)^2 < r^2
 		return Math.pow((x - centerPoint.getX()), 2) + Math.pow((y - centerPoint.getY()), 2) < Math.pow(radius, 2);
 	}
-	
-	/**
-	 * See http://mathworld.wolfram.com/Circle-LineIntersection.html
-	 * 
-	 * @param x1 float line first end point x coordinate
-	 * @param y1 float line first end point y coordinate
-	 * @param x2 float line second end point x coordinate
-	 * @param y2 float line second end point y coordinate 
-	 * @return boolean intersection
-	 */
-	public boolean lineIntersects(float x1, float y1, float x2, float y2) {
-		
-		// circle at the origin
-		// - set line relative to it
-		if(WORLD_COORDS) {
-			x1 -= this.centerPoint.getX();
-			y1 -= this.centerPoint.getY();
-			x2 -= this.centerPoint.getX();
-			y2 -= this.centerPoint.getY();
-		}
-		else {
-			x1 -= MToPx.pxToM(this.centerPoint.getX());
-			y1 -= MToPx.pxToM(this.centerPoint.getY());
-			x2 -= MToPx.pxToM(this.centerPoint.getX());
-			y2 -= MToPx.pxToM(this.centerPoint.getY());
-		}
-		
-		float dx = x2 - x1,
-				dy = y2 - y1,
-				dr = (float)Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)),
-				D = x1 * y2 - x2 * y1;
-		
-		float delta = (float)(Math.pow(this.radius, 2) * Math.pow(dr, 2) - Math.pow(D, 2));
-		
-		return delta >= 0;
-	}
 
 	/**
+	 * Determines if an infinite line intersects the circle.
 	 * See http://mathworld.wolfram.com/Circle-LineIntersection.html
 	 * 
 	 * @param line Line
 	 * @return boolean intersection
 	 */
-	public boolean lineIntersects(Line line) {
+	public boolean intersectsLine(Line line) {
 
 		// circle at the origin
 		// - set line relative to it
+		if(WORLD_COORDS) {
+			line.setX1(line.getX1() - this.centerPoint.getX());
+			line.setY1(line.getY1() - this.centerPoint.getY());
+			line.setX2(line.getX2() - this.centerPoint.getX());
+			line.setY2(line.getY2() - this.centerPoint.getY());
+		}
+		else {
+			line.setX1(line.getX1() - MToPx.pxToM(this.centerPoint.getX()));
+			line.setY1(line.getY1() - MToPx.pxToM(this.centerPoint.getY()));
+			line.setX2(line.getX2() - MToPx.pxToM(this.centerPoint.getX()));
+			line.setY2(line.getY2() - MToPx.pxToM(this.centerPoint.getY()));
+		}
+		
+		float dx = line.getX2() - line.getX1(),
+				dy = line.getY2() - line.getY1(),
+				dr = (float)Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)),
+				D = line.getX1() * line.getY2() - line.getX2() * line.getY1();
+		
+		float radiusPow = (float)Math.pow(this.radius, 2),
+				drPow = (float)Math.pow(dr, 2),
+				DPow = (float)Math.pow(D, 2);
+		
+		float delta = (float)(radiusPow * drPow - DPow);
+		
+		return delta >= 0;
+	}
+	
+	/**
+	 * See http://mathworld.wolfram.com/Circle-LineIntersection.html
+	 * 
+	 * @param line Line the line in question
+	 * @return Vector2[] a 2-element array containing the intersection points
+	 */
+	public Vector2[] getLineIntersectionPoints(Line line) {
 		
 		if(WORLD_COORDS) {
 			line.setX1(line.getX1() - this.centerPoint.getX());
@@ -88,15 +87,85 @@ public class Circle {
 				dr = (float)Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)),
 				D = line.getX1() * line.getY2() - line.getX2() * line.getY1();
 		
-		double radiusPow = Math.pow(this.radius, 2),
-				drPow = Math.pow(dr, 2),
-				DPow = Math.pow(D, 2);
+		float radiusPow = (float)Math.pow(this.radius, 2),
+				drPow = (float)Math.pow(dr, 2),
+				DPow = (float)Math.pow(D, 2);
 		
-		double delta = radiusPow * drPow - DPow;
+		float delta = (float)(radiusPow * drPow - DPow);
 		
-		System.out.println("\ndelta: " + delta);
+		if(delta < 0) // no intersection
+			return null;
 		
-		return delta >= 0;
+		float resX1 = (float)((D * dy + (dy < 0 ? -1 : 1) * dx * Math.sqrt(delta)) / drPow);
+		float resY1 = (float)((-D * dx + Math.abs(dy) * Math.sqrt(delta)) / drPow);
+		
+		if(delta == 0) // one intersection point, tangent
+			return new Vector2[] {
+					// move intersection point from the origin to its actual place
+					new Vector2(resX1 + this.centerPoint.getX(), resY1 + this.centerPoint.getY()) 
+			};
+		else { // two intersection points
+			float resX2 = (float)((D * dy - (dy < 0 ? -1 : 1) * dx * Math.sqrt(delta)) / drPow);
+			float resY2 = (float)((-D * dx - Math.abs(dy) * Math.sqrt(delta)) / drPow);
+			return new Vector2[] {
+					// move intersection points from the origin to their actual place
+					new Vector2(resX1 + this.centerPoint.getX(), resY1 + this.centerPoint.getY()),
+					new Vector2(resX2 + this.centerPoint.getX(), resY2 + this.centerPoint.getY())
+			};
+		}
+	}
+	
+	/**
+	 * Determines whether the circle intersects with the infinite
+	 * lines bounding the rectangle.
+	 * @param rect Rect the rectangle
+	 * @return boolean intersects
+	 */
+	public boolean intersectsRectLines(Rect rect) {
+		Line[] rectBounds = rect.getBounds();
+		for(Line line : rectBounds) {
+			if(this.intersectsLine(line))
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Determines whether the circle intersects with the actual
+	 * rectangle, as determined by the intersection points
+	 * lying on rect bounds.
+	 * @param rect Rect the rectangle
+	 * @return boolean intersection points lying on rect bounds
+	 */
+	public boolean intersectsRect(Rect rect) {
+		System.out.println(rect);
+		boolean intersects = false;
+		Line[] rectBounds = rect.getBounds();
+		for(Line line : rectBounds) {
+			Vector2[] intersectionPoints = this.getLineIntersectionPoints(line);
+			if(intersectionPoints != null) {
+				int i = 1;
+				for(Vector2 point : intersectionPoints) {
+					System.out.println("Intersection point " + i + ":");
+					System.out.println(point);
+					if(point.getX() >= rect.getX() 
+							&& point.getX() <= rect.getX() + rect.getW()
+							&& point.getY() >= rect.getY()
+							&& point.getY() <= rect.getY() + rect.getH()) {
+						System.out.println("INTERSECTION");
+						intersects = true;
+						break;
+					}
+					i++;
+				}
+			}
+			else
+				intersects = false; // array is null - no intersection found
+		}
+		System.out.println("------");
+		if(intersects)
+			System.out.println("pass");
+		return intersects;
 	}
 	
 	public float getX() {

@@ -6,6 +6,7 @@ import com.mkcode.goballistic.ground.Ground;
 import com.mkcode.goballistic.math.Circle;
 import com.mkcode.goballistic.math.MToPx;
 import com.mkcode.goballistic.math.Vector2;
+import com.mkcode.goballistic.states.GamePlayingState;
 import com.mkcode.goballistic.util.Constants;
 
 public class Bullet extends AbstractMovingGameObject {
@@ -14,7 +15,7 @@ public class Bullet extends AbstractMovingGameObject {
 	
 	public Bullet(float x, float y, float angle, float force, float mass) {
 		super(x, y, Constants.BULLET_DIM, Constants.BULLET_DIM, mass, "bullet.png");
-		this.circle = new Circle(x, y, 5, true);
+		this.circle = new Circle(x, y, Constants.BULLET_R, true);
 //		this.velocity = new Velocity(angle, force, mass);
 		this.velocity = new Velocity(mass);
 		Vector2 initialAcceleration = Vector2.polar(angle, force / mass);
@@ -38,6 +39,12 @@ public class Bullet extends AbstractMovingGameObject {
 				MToPx.mToPx(this.circle.getCenterPoint().getX()) - this.texture.getWidth() / 2, 
 				MToPx.mToPx(this.circle.getCenterPoint().getY()) + this.texture.getHeight() / 2
 		);
+	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		GamePlayingState.FIRING = false;
 	}
 	
 	public Vector2 getLocation() {

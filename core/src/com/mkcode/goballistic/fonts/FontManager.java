@@ -1,4 +1,4 @@
-package com.mkcode.goballistic.managers;
+package com.mkcode.goballistic.fonts;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +19,7 @@ public class FontManager {
 		createFont("font10", 10);
 		createFont("inputFont", 30);
 		createFont("labelFont", 25);
+		createFont("scoreFont", 20);
 	}
 	
 	public BitmapFont getFont(String key) {

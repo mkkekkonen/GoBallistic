@@ -35,6 +35,8 @@ public class Resources {
 	}
 	
 	private void initFiResources() {
+		fiResources.put("shots", "Laukauksia");
+		fiResources.put("time", "Aika");
 		fiResources.put("angle", "Kulma °");
 		fiResources.put("inputAngle", "Syötä kulma");
 		fiResources.put("force", "Voima N");
@@ -42,6 +44,8 @@ public class Resources {
 	}
 	
 	private void initEnResources() {
+		enResources.put("shots", "Shots");
+		enResources.put("time", "Time");
 		enResources.put("angle", "Angle °");
 		enResources.put("inputAngle", "Input an angle");
 		enResources.put("force", "Force N");

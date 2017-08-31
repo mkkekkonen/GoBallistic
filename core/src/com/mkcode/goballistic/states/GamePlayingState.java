@@ -7,6 +7,7 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mkcode.goballistic.fonts.FontManager;
 import com.mkcode.goballistic.gameobjects.Bullet;
 import com.mkcode.goballistic.gameobjects.GroundElement;
 import com.mkcode.goballistic.gameobjects.Target;
@@ -16,11 +17,11 @@ import com.mkcode.goballistic.ground.Ground;
 import com.mkcode.goballistic.ground.GroundGenerator;
 import com.mkcode.goballistic.inputfields.InputType;
 import com.mkcode.goballistic.inputfields.NumberInput;
-import com.mkcode.goballistic.managers.FontManager;
 import com.mkcode.goballistic.math.Line;
 import com.mkcode.goballistic.math.MToPx;
 import com.mkcode.goballistic.math.Vector2;
 import com.mkcode.goballistic.resources.Resources;
+import com.mkcode.goballistic.score.Score;
 import com.mkcode.goballistic.ui.Button;
 import com.mkcode.goballistic.ui.ControlsBackground;
 import com.mkcode.goballistic.util.Constants;
@@ -32,11 +33,10 @@ public class GamePlayingState extends AbstractState {
 	private Bullet bullet = null;
 	private ControlsBackground controlsBackground;
 	private NumberInput angleInput, forceInput;
-	private BitmapFont labelFont;
+	private BitmapFont labelFont, scoreFont;
 	private Button button;
 	private List<Target> targetContainer;
-	
-	private int TOP = 0, RIGHT = 0, LEFT = 0, BOTTOM = 0;
+	private Score score;
 	
 	public static boolean 
 			ANGLE_INPUT_SHOWN = false,
@@ -48,6 +48,7 @@ public class GamePlayingState extends AbstractState {
 		this.ground = GroundGenerator.generateGround();
 		this.turret = new Turret();
 		this.generateTargets();
+		this.score = new Score();
 		this.controlsBackground = new ControlsBackground(0, 0);
 		this.angleInput = new NumberInput(
 				this.turret,
@@ -66,6 +67,7 @@ public class GamePlayingState extends AbstractState {
 				InputType.FORCE
 		);
 		this.labelFont = fontManager.getFont("labelFont");
+		this.scoreFont = fontManager.getFont("scoreFont");
 		this.button = new Button();
 	}
 	
@@ -106,6 +108,7 @@ public class GamePlayingState extends AbstractState {
 			}
 			if(this.button.getCircle().containsPoint(Gdx.input.getX(), Gdx.input.getY()) && !FIRING) {
 				FIRING = true;
+				score.incrementShots(); // update score
 				float[] barrelEndCoords = this.sineBulletLocation(this.angleInput.getValue());
 				this.bullet = new Bullet(
 						barrelEndCoords[0] + Constants.TURRET_OFFSET + Constants.TURRET_WIDTH / 2, 
@@ -116,6 +119,8 @@ public class GamePlayingState extends AbstractState {
 				);
 			}
 		}
+		
+		this.score.updateTime();
 	}
 	
 	@Override
@@ -127,6 +132,12 @@ public class GamePlayingState extends AbstractState {
 			this.bullet.render(batch);
 		for(Target target : this.targetContainer)
 			target.render(batch);
+		
+		this.scoreFont.draw(batch, Resources.tr("shots"), 460, 440);
+		this.scoreFont.draw(batch, Resources.tr("time"), 460, 400);
+		this.scoreFont.draw(batch, Integer.toString(score.getShots()), 580, 440);
+		this.scoreFont.draw(batch, Float.toString(Math.round(score.getTime() * 100f) / 100f), 580, 400);
+		
 		this.controlsBackground.render(batch);
 		this.angleInput.render(batch);
 		this.forceInput.render(batch);
@@ -185,6 +196,7 @@ public class GamePlayingState extends AbstractState {
 	
 	private void checkBulletCollision() {
 		this.checkBulletGroundCollision();
+		this.checkBulletTargetCollision();
 	}
 	
 	private void checkBulletGroundCollision() {
@@ -195,12 +207,11 @@ public class GamePlayingState extends AbstractState {
 					bulletLocation.getX(), 
 					bulletLocation.getY()
 			);
-			System.out.println(this.bullet.getCircle());
 			// calculate bullet bounds
-			TOP = top = (int)Math.floor(newBulletLocation.getY() + 0.5) - (Constants.CONTROLS_AREA_HEIGHT - 1);
+			top = (int)Math.floor(newBulletLocation.getY() + 0.5) - (Constants.CONTROLS_AREA_HEIGHT - 1);
 			right = (int)Math.floor(newBulletLocation.getX() + 0.5);
 			bottom = (int)Math.floor(newBulletLocation.getY() - 0.5) - (Constants.CONTROLS_AREA_HEIGHT - 1);
-			LEFT = left = (int)Math.floor(newBulletLocation.getX() - 0.5);
+			left = (int)Math.floor(newBulletLocation.getX() - 0.5);
 			// check "squares" the bullet is in
 			checkBulletGroundElementCollision(left, top);
 			checkBulletGroundElementCollision(right, top);
@@ -210,22 +221,29 @@ public class GamePlayingState extends AbstractState {
 	}
 	
 	private void checkBulletGroundElementCollision(int x, int y) {
-		Integer[][] groundElementMatrix = this.ground.getGroundElementMatrix(); 
-		System.out.println("X: " + x + " Y: " + y);
-		if(bullet != null && y >= 0 && y < Constants.MAX_GROUND_HEIGHT && x >= 0 && x < Constants.GROUND_WIDTH) {
+		Integer[][] groundElementMatrix = this.ground.getGroundElementMatrix();
+		if(this.bullet != null && y >= 0 && y < Constants.MAX_GROUND_HEIGHT && x >= 0 && x < Constants.GROUND_WIDTH) {
 			int yCoord = Constants.MAX_GROUND_HEIGHT - 1 - y;
 			if(groundElementMatrix[yCoord][x] == 1) { // ground element found in this location
 				GroundElement groundElement = new GroundElement(x, y);
-				Line[] eleBounds = groundElement.getRect().getBounds();
-				for(Line line : eleBounds) {
-					if(this.bullet.getCircle().lineIntersects(line)) {
-						groundElementMatrix[yCoord][x] = 0;
-						this.bullet.dispose();
-						this.bullet = null;
-						FIRING = false;
-						break;
-					}
+				if(this.bullet.getCircle().intersectsRectLines(groundElement.getRect())) {
+					groundElementMatrix[yCoord][x] = 0;
+					this.bullet.dispose();
+					this.bullet = null;
 				}
+			}
+		}
+	}
+	
+	private void checkBulletTargetCollision() {
+		for(int i = targetContainer.size() - 1; i >= 0; i--) {
+			Target target = targetContainer.get(i);
+			if(this.bullet != null && this.bullet.getCircle().intersectsRect(target.getRect())) {
+				this.bullet.dispose();
+				this.bullet = null;
+				this.targetContainer.remove(i);
+				target.dispose();
+				target = null;
 			}
 		}
 	}
