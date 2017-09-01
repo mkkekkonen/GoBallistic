@@ -33,5 +33,7 @@ public class StateManager {
 	
 	public void changeState(String newState) {
 		this.currentState = newState;
+		if(newState == "gamePlaying")
+			this.gameStates.get(newState).init();
 	}
 }

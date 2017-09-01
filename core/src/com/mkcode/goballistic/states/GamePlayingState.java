@@ -35,7 +35,7 @@ public class GamePlayingState extends AbstractState {
 	private NumberInput angleInput, forceInput;
 	private BitmapFont labelFont, scoreFont;
 	private Button button;
-	private List<Target> targetContainer;
+	private List<Target> targetContainer = null;
 	private Score score;
 	
 	public static boolean 
@@ -45,10 +45,7 @@ public class GamePlayingState extends AbstractState {
 	
 	public GamePlayingState(StateManager stateManager, FontManager fontManager) {
 		super(stateManager, fontManager);
-		this.ground = GroundGenerator.generateGround();
 		this.turret = new Turret();
-		this.generateTargets();
-		this.score = new Score();
 		this.controlsBackground = new ControlsBackground(0, 0);
 		this.angleInput = new NumberInput(
 				this.turret,
@@ -69,6 +66,14 @@ public class GamePlayingState extends AbstractState {
 		this.labelFont = fontManager.getFont("labelFont");
 		this.scoreFont = fontManager.getFont("scoreFont");
 		this.button = new Button();
+	}
+	
+	@Override
+	public void init() {
+		this.ground = GroundGenerator.generateGround();
+		this.turret.init();
+		this.generateTargets();
+		this.score = new Score();
 	}
 	
 	@Override
@@ -96,8 +101,8 @@ public class GamePlayingState extends AbstractState {
 				target.update(deltaTime, this.ground);
 		}
 		
-		float yCoord = Constants.WND_HEIGHT - Gdx.input.getY();
 		if(Gdx.input.isTouched()) {
+			float yCoord = Constants.WND_HEIGHT - Gdx.input.getY();
 			if(this.angleInput.getRect().containsPoint(Gdx.input.getX(), yCoord) && !ANGLE_INPUT_SHOWN) {
 				ANGLE_INPUT_SHOWN = true;
 				this.angleInput.getInput();
@@ -158,6 +163,8 @@ public class GamePlayingState extends AbstractState {
 		this.turret.dispose();
 		if(this.bullet != null)
 			this.bullet.dispose();
+		for(Target target : this.targetContainer)
+			target.dispose();
 		this.controlsBackground.dispose();
 		this.angleInput.dispose();
 		this.forceInput.dispose();
@@ -165,6 +172,9 @@ public class GamePlayingState extends AbstractState {
 	}
 	
 	private void generateTargets() {
+		if(this.targetContainer != null)
+			for(Target target : this.targetContainer)
+				target.dispose();
 		this.targetContainer = new ArrayList<Target>();
 		Random random = new Random(System.currentTimeMillis());
 		for(int i = 0; i < Constants.SMALL_TARGET_AMOUNT; i++)

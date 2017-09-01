@@ -14,14 +14,18 @@ public class TurretBarrel extends AbstractGameObject {
 	private float rotation;
 	
 	public TurretBarrel() {
-		super(Constants.TURRET_OFFSET + Constants.TURRET_WIDTH / 2, GroundGenerator.getTurretLevel(), "turret_barrel.png");
+		super(0, 0, "turret_barrel.png");
+	}
+
+	public void init() {
+		this.bottomLeft = new Vector2(Constants.TURRET_OFFSET + Constants.TURRET_WIDTH / 2, GroundGenerator.getTurretLevel());
 		float textureWidthHalf = this.texture.getWidth() / 2;
 		this.bottomLeft.setX(this.bottomLeft.getX() - MToPx.pxToM(textureWidthHalf));
 		this.bottomLeft.setY(this.bottomLeft.getY() + MToPx.pxToM(textureWidthHalf));
 		this.origin = new Vector2(textureWidthHalf, textureWidthHalf);
 		this.rotation = -45;
 	}
-
+	
 	@Override
 	public void render(SpriteBatch batch) {
 		batch.draw(

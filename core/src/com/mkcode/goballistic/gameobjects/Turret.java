@@ -3,6 +3,7 @@ package com.mkcode.goballistic.gameobjects;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mkcode.goballistic.ground.GroundGenerator;
 import com.mkcode.goballistic.math.MToPx;
+import com.mkcode.goballistic.math.Vector2;
 import com.mkcode.goballistic.util.Constants;
 
 public class Turret extends AbstractGameObject {
@@ -12,10 +13,15 @@ public class Turret extends AbstractGameObject {
 	private float force;
 	
 	public Turret() {
-		super(Constants.TURRET_OFFSET, GroundGenerator.getTurretLevel(), "turret_base.png");
+		super(0, 0, "turret_base.png");
 		barrel = new TurretBarrel();
 	}
-
+	
+	public void init() {
+		this.bottomLeft = new Vector2(Constants.TURRET_OFFSET, GroundGenerator.getTurretLevel());
+		this.barrel.init();
+	}
+	
 	@Override
 	public void render(SpriteBatch batch) {
 		this.barrel.render(batch);

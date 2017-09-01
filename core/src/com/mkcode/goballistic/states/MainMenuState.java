@@ -33,6 +33,11 @@ public class MainMenuState extends AbstractState {
 
 	@Override
 	public void update(float deltaTime) {
-		
+		if(Gdx.input.isTouched()) {
+			float yCoord = Constants.WND_HEIGHT - Gdx.input.getY();
+			if(playButton.getRect().containsPoint(new Vector2(Gdx.input.getX(), yCoord))) {
+				stateManager.changeState("gamePlaying");
+			}
+		}
 	}
 }

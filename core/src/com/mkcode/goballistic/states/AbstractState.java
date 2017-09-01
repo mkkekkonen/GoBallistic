@@ -19,6 +19,10 @@ public abstract class AbstractState {
 		this.fontManager = fontManager;
 	}
 	
+	public void init() {
+		
+	}
+	
 	public void render(SpriteBatch batch) {
 		batch.draw(backgroundImage, 0, 0);
 	}
