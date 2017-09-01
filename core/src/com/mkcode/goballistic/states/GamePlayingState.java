@@ -133,10 +133,15 @@ public class GamePlayingState extends AbstractState {
 		for(Target target : this.targetContainer)
 			target.render(batch);
 		
-		this.scoreFont.draw(batch, Resources.tr("shots"), 460, 440);
-		this.scoreFont.draw(batch, Resources.tr("time"), 460, 400);
-		this.scoreFont.draw(batch, Integer.toString(score.getShots()), 580, 440);
-		this.scoreFont.draw(batch, Float.toString(Math.round(score.getTime() * 100f) / 100f), 580, 400);
+		this.scoreFont.draw(batch, Resources.tr("shots"), Constants.SCORE_LABEL_OFFSET_X, Constants.SCORE_SHOTS_OFFSET_Y);
+		this.scoreFont.draw(batch, Resources.tr("time"), Constants.SCORE_LABEL_OFFSET_X, Constants.SCORE_TIME_OFFSET_Y);
+		this.scoreFont.draw(batch, Integer.toString(score.getShots()), Constants.SCORE_VALUE_OFFSET_X, Constants.SCORE_SHOTS_OFFSET_Y);
+		this.scoreFont.draw(
+				batch, 
+				this.formatTime(score.getTime()), 
+				Constants.SCORE_VALUE_OFFSET_X, 
+				Constants.SCORE_TIME_OFFSET_Y
+		);
 		
 		this.controlsBackground.render(batch);
 		this.angleInput.render(batch);
@@ -246,5 +251,11 @@ public class GamePlayingState extends AbstractState {
 				target = null;
 			}
 		}
+	}
+	
+	private String formatTime(float time) {
+		int minutes = (int)Math.floor(time / 60f);
+		float secondsRemaining = Math.round((time % 60f) * 100f) / 100f;
+		return (minutes + ":" + secondsRemaining);
 	}
 }
