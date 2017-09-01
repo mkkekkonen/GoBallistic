@@ -43,8 +43,8 @@ public class GamePlayingState extends AbstractState {
 			FORCE_INPUT_SHOWN = false,
 			FIRING = false;
 	
-	public GamePlayingState(FontManager fontManager) {
-		super(fontManager);
+	public GamePlayingState(StateManager stateManager, FontManager fontManager) {
+		super(stateManager, fontManager);
 		this.ground = GroundGenerator.generateGround();
 		this.turret = new Turret();
 		this.generateTargets();

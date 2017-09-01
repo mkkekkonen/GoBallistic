@@ -4,8 +4,8 @@ import com.mkcode.goballistic.fonts.FontManager;
 
 public class ScoreboardState extends AbstractState {
 
-	public ScoreboardState(FontManager fontManager) {
-		super(fontManager);
+	public ScoreboardState(StateManager stateManager, FontManager fontManager) {
+		super(stateManager, fontManager);
 		// TODO Auto-generated constructor stub
 	}
 

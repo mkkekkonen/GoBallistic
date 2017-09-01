@@ -16,6 +16,8 @@ public class FontManager {
 	public FontManager() {
 		fontMap = new HashMap<String, BitmapFont>();
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("data-latin.ttf"));
+		createFont("titleFont", 40);
+		createFont("mainMenuFont", 35);
 		createFont("font10", 10);
 		createFont("inputFont", 30);
 		createFont("labelFont", 25);

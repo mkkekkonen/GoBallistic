@@ -10,28 +10,28 @@ public class StateManager {
 
 	Map<String, AbstractState> gameStates;	// dictionary of game states
 	
-	String currentState = "gamePlaying";
+	String currentState = "mainMenu"; // the first state in the game
 	
 	public StateManager(FontManager fontManager) {
-		gameStates = new HashMap<String, AbstractState>(); // initialize game state dictionary
-		gameStates.put("gamePlaying", new GamePlayingState(fontManager)); // initialize "game playing" state,
-		 																  // pass in fontManager
+		this.gameStates = new HashMap<String, AbstractState>(); // initialize game state dictionary
+		this.gameStates.put("mainMenu", new MainMenuState(this, fontManager));
+		this.gameStates.put("gamePlaying", new GamePlayingState(this, fontManager));
 	}
 	
 	public void render(SpriteBatch batch) {
-		gameStates.get(currentState).render(batch);	// render current game state
+		this.gameStates.get(this.currentState).render(batch);	// render current game state
 	}
 	
 	public void update(float deltaTime) {
-		gameStates.get(currentState).update(deltaTime); // update (physics etc.) with time delta
+		this.gameStates.get(this.currentState).update(deltaTime); // update (physics etc.) with time delta
 	}
 	
 	public void dispose() {
-		for(Map.Entry<String, AbstractState> entry : gameStates.entrySet()) // loop through game states
+		for(Map.Entry<String, AbstractState> entry : this.gameStates.entrySet()) // loop through game states
 			entry.getValue().dispose();	// dispose of each game state
 	}
 	
 	public void changeState(String newState) {
-		
+		this.currentState = newState;
 	}
 }

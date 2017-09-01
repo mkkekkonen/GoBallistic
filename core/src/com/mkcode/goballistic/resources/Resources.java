@@ -35,6 +35,9 @@ public class Resources {
 	}
 	
 	private void initFiResources() {
+		fiResources.put("GoBallistic", "Go Ballistic");
+		fiResources.put("newGame", "Uusi peli");
+		fiResources.put("highScores", "Korkeimmat pisteet");
 		fiResources.put("shots", "Laukauksia");
 		fiResources.put("time", "Aika");
 		fiResources.put("angle", "Kulma °");
@@ -44,6 +47,9 @@ public class Resources {
 	}
 	
 	private void initEnResources() {
+		enResources.put("GoBallistic", "Go Ballistic");
+		enResources.put("newGame", "New Game");
+		enResources.put("highScores", "High Scores");
 		enResources.put("shots", "Shots");
 		enResources.put("time", "Time");
 		enResources.put("angle", "Angle °");
