@@ -7,11 +7,11 @@ import com.mkcode.goballistic.math.Circle;
 import com.mkcode.goballistic.math.MToPx;
 import com.mkcode.goballistic.util.Constants;
 
-public class Button extends AbstractUIElement {
+public class FireButton extends AbstractUIElement {
 
 	private Circle circle;
 	
-	public Button() {
+	public FireButton() {
 		super("button.png");
 		this.circle = new Circle(370, MToPx.mToPx(Constants.GAME_AREA_HEIGHT + Constants.CONTROLS_AREA_HEIGHT / 2), 30, false);
 	}

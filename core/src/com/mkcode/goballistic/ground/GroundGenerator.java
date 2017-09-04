@@ -22,6 +22,8 @@ public class GroundGenerator {
 		
 		int previous = Constants.START_GROUND_HEIGHT;
 		
+		boolean turretLevelSet = false;
+		
 		for(int i = 0; i < Constants.GROUND_WIDTH; i++) {
 			// generate random number between -maxdelta and maxdelta
 			int delta = 0;
@@ -34,8 +36,9 @@ public class GroundGenerator {
 			// clamp height between max and min values
 			int height = Math.max(Constants.MIN_GROUND_HEIGHT, Math.min(Constants.MAX_GROUND_HEIGHT, previous + delta));
 			
-			if(turretLevel == 0 && i >= Constants.PLATFORM_OFFSET) {
+			if(!turretLevelSet && i >= Constants.PLATFORM_OFFSET) {
 				turretLevel = Constants.GAME_AREA_HEIGHT - height + Constants.TURRET_HEIGHT;
+				turretLevelSet = true;
 				System.out.println("Turret level: " + turretLevel);
 			}
 			

@@ -26,7 +26,7 @@ public class Score {
 	}
 	
 	public float getTime() {
-		return time / 100f;
+		return time / 1000f;
 	}
 	
 	public void setTime(long time) {
