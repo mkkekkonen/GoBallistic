@@ -1,4 +1,4 @@
-package com.mkcode.goballistic.inputfields;
+package com.mkcode.goballistic.input;
 
 import com.badlogic.gdx.Input.TextInputListener;
 import com.mkcode.goballistic.states.GamePlayingState;

@@ -16,6 +16,7 @@ public class StateManager {
 		this.gameStates = new HashMap<String, AbstractState>(); // initialize game state dictionary
 		this.gameStates.put("mainMenu", new MainMenuState(this, fontManager));
 		this.gameStates.put("gamePlaying", new GamePlayingState(this, fontManager));
+		this.gameStates.put("scoreboard", new ScoreboardState(this, fontManager));
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -33,7 +34,12 @@ public class StateManager {
 	
 	public void changeState(String newState) {
 		this.currentState = newState;
-		if(newState == "gamePlaying")
+		if(newState == "gamePlaying" || newState == "scoreboard")
 			this.gameStates.get(newState).init();
+		if(newState == "scoreboard") {
+			ScoreboardState sbState = (ScoreboardState)this.gameStates.get(newState);
+			GamePlayingState gpState = (GamePlayingState)this.gameStates.get("gamePlaying");
+			sbState.setScore(gpState.getScore());
+		}
 	}
 }

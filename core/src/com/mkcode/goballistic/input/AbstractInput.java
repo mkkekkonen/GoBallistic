@@ -1,4 +1,4 @@
-package com.mkcode.goballistic.inputfields;
+package com.mkcode.goballistic.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

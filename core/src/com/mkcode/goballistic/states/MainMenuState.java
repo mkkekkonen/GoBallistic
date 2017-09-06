@@ -18,7 +18,7 @@ public class MainMenuState extends AbstractState {
 	public MainMenuState(StateManager stateManager, FontManager fontManager) {
 		super(stateManager, fontManager);
 		this.titleFont = this.fontManager.getFont("titleFont");
-		this.menuFont = this.fontManager.getFont("mainMenuFont");
+		this.menuFont = this.fontManager.getFont("font35");
 		this.playButton = new MainMenuButton(new Vector2(Constants.MAIN_MENU_BUTTON_OFFSET_X, Constants.MAIN_MENU_BUTTON_PLAY_Y), menuFont, "newGame");
 		this.highScoresButton = new MainMenuButton(new Vector2(Constants.MAIN_MENU_BUTTON_OFFSET_X, Constants.MAIN_MENU_BUTTON_HISCORES_Y), menuFont, "highScores");
 	}

@@ -32,4 +32,11 @@ public class Score {
 	public void setTime(long time) {
 		this.time = time;
 	}
+	
+	public String getFormattedTime() {
+		float _time = getTime();
+		int minutes = (int)Math.floor(_time / 60f);
+		float secondsRemaining = Math.round((_time % 60f) * 100f) / 100f;
+		return (minutes + ":" + secondsRemaining);
+	}
 }

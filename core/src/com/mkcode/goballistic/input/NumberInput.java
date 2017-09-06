@@ -1,4 +1,4 @@
-package com.mkcode.goballistic.inputfields;
+package com.mkcode.goballistic.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -30,7 +30,7 @@ public class NumberInput extends AbstractInput {
 	}
 	
 	public void getInput() {
-		Gdx.input.getTextInput(listener, title, "0", "");
+		Gdx.input.getTextInput(listener, title, Float.toString(Math.round(value * 100f) / 100f), "");
 	}
 	
 	public float getValue() {

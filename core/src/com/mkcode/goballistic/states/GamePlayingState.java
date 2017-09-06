@@ -15,8 +15,8 @@ import com.mkcode.goballistic.gameobjects.TargetSize;
 import com.mkcode.goballistic.gameobjects.Turret;
 import com.mkcode.goballistic.ground.Ground;
 import com.mkcode.goballistic.ground.GroundGenerator;
-import com.mkcode.goballistic.inputfields.InputType;
-import com.mkcode.goballistic.inputfields.NumberInput;
+import com.mkcode.goballistic.input.InputType;
+import com.mkcode.goballistic.input.NumberInput;
 import com.mkcode.goballistic.math.Line;
 import com.mkcode.goballistic.math.MToPx;
 import com.mkcode.goballistic.math.Vector2;
@@ -30,6 +30,7 @@ import com.mkcode.goballistic.util.Constants;
 public class GamePlayingState extends AbstractState {
 
 	private Ground ground;
+	private GroundElement groundElementFlyweight;
 	private Turret turret;
 	private Bullet bullet = null;
 	private List<Target> targetContainer = null;
@@ -49,6 +50,7 @@ public class GamePlayingState extends AbstractState {
 	
 	public GamePlayingState(StateManager stateManager, FontManager fontManager) {
 		super(stateManager, fontManager);
+		groundElementFlyweight = new GroundElement();
 		turret = new Turret();
 		controlsBackground = new ControlsBackground(0, 0);
 		angleInput = new NumberInput(
@@ -70,7 +72,10 @@ public class GamePlayingState extends AbstractState {
 		labelFont = fontManager.getFont("labelFont");
 		scoreFont = fontManager.getFont("scoreFont");
 		fireButton = new FireButton();
-		exitButton = new ExitButton(new Vector2(640 - 50 - 10, 10));
+		exitButton = new ExitButton(new Vector2(
+				Constants.WND_WIDTH - Constants.EXIT_BUTTON_W - Constants.EXIT_BUTTON_MARGIN, 
+				Constants.EXIT_BUTTON_MARGIN
+		));
 	}
 	
 	@Override
@@ -83,10 +88,13 @@ public class GamePlayingState extends AbstractState {
 	
 	@Override
 	public void update(float deltaTime) {
+		
+		if(this.targetContainer.size() == 0)
+			changeState("scoreboard");
+		
 		if(bullet != null) {
 			if(bullet.getLocation().getX() > Constants.WND_ELE_WIDTH 
 					|| bullet.getLocation().getY() <= Constants.CONTROLS_AREA_HEIGHT) {
-				System.out.println("Location: " + bullet.getLocation());
 				bullet.dispose();
 				bullet = null;
 				FIRING = false;
@@ -133,10 +141,8 @@ public class GamePlayingState extends AbstractState {
 				);
 			}
 			
-			if(exitButton.getRect().containsPoint(Gdx.input.getX(), yCoord)) {
-				cleanUpOnExit();
-				stateManager.changeState("mainMenu");
-			}
+			if(exitButton.getRect().containsPoint(Gdx.input.getX(), yCoord))
+				changeState("mainMenu");
 		}
 		
 		this.score.updateTime();
@@ -157,7 +163,7 @@ public class GamePlayingState extends AbstractState {
 		scoreFont.draw(batch, Integer.toString(score.getShots()), Constants.SCORE_VALUE_OFFSET_X, Constants.SCORE_SHOTS_OFFSET_Y);
 		scoreFont.draw(
 				batch, 
-				formatTime(score.getTime()), 
+				score.getFormattedTime(), 
 				Constants.SCORE_VALUE_OFFSET_X, 
 				Constants.SCORE_TIME_OFFSET_Y
 		);
@@ -175,6 +181,7 @@ public class GamePlayingState extends AbstractState {
 	public void dispose() {
 		super.dispose();
 		ground.dispose();
+		groundElementFlyweight.dispose();
 		turret.dispose();
 		if(bullet != null)
 			bullet.dispose();
@@ -184,6 +191,7 @@ public class GamePlayingState extends AbstractState {
 		angleInput.dispose();
 		forceInput.dispose();
 		fireButton.dispose();
+		exitButton.dispose();
 	}
 	
 	private void cleanUpOnExit() {
@@ -192,6 +200,11 @@ public class GamePlayingState extends AbstractState {
 			bullet.dispose();
 		for(Target target : targetContainer)
 			target.dispose();
+	}
+	
+	private void changeState(String stateName) {
+		cleanUpOnExit();
+		stateManager.changeState(stateName);
 	}
 	
 	private void generateTargets() {
@@ -263,8 +276,9 @@ public class GamePlayingState extends AbstractState {
 		if(bullet != null && y >= 0 && y < Constants.MAX_GROUND_HEIGHT && x >= 0 && x < Constants.GROUND_WIDTH) {
 			int yCoord = Constants.MAX_GROUND_HEIGHT - 1 - y;
 			if(groundElementMatrix[yCoord][x] == 1) { // ground element found in this location
-				GroundElement groundElement = new GroundElement(x, y);
-				if(bullet.getCircle().intersectsRectLines(groundElement.getRect())) {
+				groundElementFlyweight.setBottomLeft(new Vector2(x, y));
+				if(bullet.getCircle().intersectsRectLines(groundElementFlyweight.getRect())) {
+					System.out.println("### HIT ###");
 					groundElementMatrix[yCoord][x] = 0;
 					bullet.dispose();
 					bullet = null;
@@ -285,10 +299,8 @@ public class GamePlayingState extends AbstractState {
 			}
 		}
 	}
-	
-	private String formatTime(float time) {
-		int minutes = (int)Math.floor(time / 60f);
-		float secondsRemaining = Math.round((time % 60f) * 100f) / 100f;
-		return (minutes + ":" + secondsRemaining);
+
+	public Score getScore() {
+		return score;
 	}
 }

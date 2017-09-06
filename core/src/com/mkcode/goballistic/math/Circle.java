@@ -138,7 +138,6 @@ public class Circle {
 	 * @return boolean intersection points lying on rect bounds
 	 */
 	public boolean intersectsRect(Rect rect) {
-		System.out.println(rect);
 		boolean intersects = false;
 		Line[] rectBounds = rect.getBounds();
 		for(Line line : rectBounds) {
@@ -146,13 +145,10 @@ public class Circle {
 			if(intersectionPoints != null) {
 				int i = 1;
 				for(Vector2 point : intersectionPoints) {
-					System.out.println("Intersection point " + i + ":");
-					System.out.println(point);
 					if(point.getX() >= rect.getX() 
 							&& point.getX() <= rect.getX() + rect.getW()
 							&& point.getY() >= rect.getY()
 							&& point.getY() <= rect.getY() + rect.getH()) {
-						System.out.println("INTERSECTION");
 						intersects = true;
 						break;
 					}
@@ -162,9 +158,6 @@ public class Circle {
 			else
 				intersects = false; // array is null - no intersection found
 		}
-		System.out.println("------");
-		if(intersects)
-			System.out.println("pass");
 		return intersects;
 	}
 	

@@ -44,6 +44,10 @@ public class Resources {
 		fiResources.put("inputAngle", "Syötä kulma");
 		fiResources.put("force", "Voima N");
 		fiResources.put("inputForce", "Syötä voima");
+		fiResources.put("stats", "Tilasto");
+		fiResources.put("points", "Pisteet");
+		fiResources.put("ranking", "Sijoitus");
+		fiResources.put("typeName", "Anna nimi");
 	}
 	
 	private void initEnResources() {
@@ -56,5 +60,9 @@ public class Resources {
 		enResources.put("inputAngle", "Input an angle");
 		enResources.put("force", "Force N");
 		enResources.put("inputForce", "Input a force");
+		enResources.put("stats", "Stats");
+		enResources.put("points", "Points");
+		enResources.put("ranking", "Ranking");
+		enResources.put("typeName", "Input your name");
 	}
 }

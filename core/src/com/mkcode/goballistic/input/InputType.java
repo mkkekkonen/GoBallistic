@@ -1,4 +1,4 @@
-package com.mkcode.goballistic.inputfields;
+package com.mkcode.goballistic.input;
 
 public enum InputType {
 
