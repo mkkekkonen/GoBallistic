@@ -48,6 +48,7 @@ public class Resources {
 		fiResources.put("points", "Pisteet");
 		fiResources.put("ranking", "Sijoitus");
 		fiResources.put("typeName", "Anna nimi");
+		fiResources.put("empty", "(tyhjä)");
 	}
 	
 	private void initEnResources() {
@@ -64,5 +65,6 @@ public class Resources {
 		enResources.put("points", "Points");
 		enResources.put("ranking", "Ranking");
 		enResources.put("typeName", "Input your name");
+		fiResources.put("empty", "(empty)");
 	}
 }

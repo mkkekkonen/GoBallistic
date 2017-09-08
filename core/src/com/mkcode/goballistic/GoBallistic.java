@@ -60,6 +60,7 @@ public class GoBallistic extends ApplicationAdapter {
 		curTime = System.nanoTime();			// get current time in nanoseconds
 		double nsPerFrame = curTime - prevTime;	// calculate frame time
 		stateManager.update((float)(nsPerFrame / 1.0E9)); // update game state, pass in time delta
+//		stateManager.update(0.01f);				// debug
 		prevTime = curTime;						// update previous time
 	}
 	

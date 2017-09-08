@@ -50,7 +50,10 @@ public class Circle {
 		float dx = line.getX2() - line.getX1(),
 				dy = line.getY2() - line.getY1(),
 				dr = (float)Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)),
-				D = line.getX1() * line.getY2() - line.getX2() * line.getY1();
+				D = new Determinant2x2(
+						line.getX1(), line.getX2(), 
+						line.getY1(), line.getY2()
+				).calculate();
 		
 		float radiusPow = (float)Math.pow(this.radius, 2),
 				drPow = (float)Math.pow(dr, 2),
@@ -85,7 +88,10 @@ public class Circle {
 		float dx = line.getX2() - line.getX1(),
 				dy = line.getY2() - line.getY1(),
 				dr = (float)Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)),
-				D = line.getX1() * line.getY2() - line.getX2() * line.getY1();
+				D = new Determinant2x2(
+						line.getX1(), line.getX2(), 
+						line.getY1(), line.getY2()
+				).calculate();
 		
 		float radiusPow = (float)Math.pow(this.radius, 2),
 				drPow = (float)Math.pow(dr, 2),

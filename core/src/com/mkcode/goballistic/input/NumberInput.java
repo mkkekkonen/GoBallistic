@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mkcode.goballistic.gameobjects.Turret;
+import com.mkcode.goballistic.util.Constants;
 
 public class NumberInput extends AbstractInput {
 
@@ -17,9 +18,9 @@ public class NumberInput extends AbstractInput {
 		this.turret = turret;
 		this.inputType = inputType;
 		if(this.inputType == InputType.ANGLE)
-			this.value = 45;
-		else
-			this.value = 500;
+			this.value = Constants.INPUT_ANGLE_DEFAULT_VALUE;
+		else // force
+			this.value = Constants.INPUT_FORCE_DEFAULT_VALUE;
 		this.listener = new NumberInputListener(this, inputType);
 	}
 	

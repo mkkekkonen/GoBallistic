@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.mkcode.goballistic.fonts.FontManager;
 import com.mkcode.goballistic.gameobjects.Bullet;
 import com.mkcode.goballistic.gameobjects.GroundElement;
@@ -19,6 +22,7 @@ import com.mkcode.goballistic.input.InputType;
 import com.mkcode.goballistic.input.NumberInput;
 import com.mkcode.goballistic.math.Line;
 import com.mkcode.goballistic.math.MToPx;
+import com.mkcode.goballistic.math.Rect;
 import com.mkcode.goballistic.math.Vector2;
 import com.mkcode.goballistic.resources.Resources;
 import com.mkcode.goballistic.score.Score;
@@ -42,6 +46,8 @@ public class GamePlayingState extends AbstractState {
 	private ExitButton exitButton;
 	
 	private Score score;
+	
+	private ShapeRenderer shapeRenderer;
 	
 	public static boolean 
 			ANGLE_INPUT_SHOWN = false,
@@ -76,6 +82,9 @@ public class GamePlayingState extends AbstractState {
 				Constants.WND_WIDTH - Constants.EXIT_BUTTON_W - Constants.EXIT_BUTTON_MARGIN, 
 				Constants.EXIT_BUTTON_MARGIN
 		));
+		Gdx.gl.glLineWidth(1);
+		shapeRenderer = new ShapeRenderer();
+		shapeRenderer.setColor(Color.RED);
 	}
 	
 	@Override
@@ -83,6 +92,9 @@ public class GamePlayingState extends AbstractState {
 		ground = GroundGenerator.generateGround();
 		turret.init();
 		generateTargets();
+		// reset inputs
+		angleInput.setValue(Constants.INPUT_ANGLE_DEFAULT_VALUE);
+		forceInput.setValue(Constants.INPUT_FORCE_DEFAULT_VALUE);
 		score = new Score();
 	}
 	
@@ -91,6 +103,9 @@ public class GamePlayingState extends AbstractState {
 		
 		if(this.targetContainer.size() == 0)
 			changeState("scoreboard");
+		
+		if(FIRING)
+			System.out.println("pass");
 		
 		if(bullet != null) {
 			if(bullet.getLocation().getX() > Constants.WND_ELE_WIDTH 
@@ -153,8 +168,9 @@ public class GamePlayingState extends AbstractState {
 		super.render(batch);
 		ground.render(batch);
 		turret.render(batch);
-		if(bullet != null)
+		if(bullet != null) {
 			bullet.render(batch);
+		}
 		for(Target target : targetContainer)
 			target.render(batch);
 		
@@ -175,6 +191,12 @@ public class GamePlayingState extends AbstractState {
 		labelFont.draw(batch, Resources.tr("force"), Constants.LABEL_OFFSET_X, 35);
 		fireButton.render(batch);
 		exitButton.render(batch);
+		
+//		fontManager.getFont("font10").draw(batch, "X: " + Gdx.input.getX(), 50, 480 - 50);
+//		fontManager.getFont("font10").draw(batch, "Y: " + Gdx.input.getY(), 50, 480 - 70);
+		
+//		if(bullet != null)
+//			drawDebugLines();
 	}
 	
 	@Override
@@ -277,8 +299,11 @@ public class GamePlayingState extends AbstractState {
 			int yCoord = Constants.MAX_GROUND_HEIGHT - 1 - y;
 			if(groundElementMatrix[yCoord][x] == 1) { // ground element found in this location
 				groundElementFlyweight.setBottomLeft(new Vector2(x, y));
-				if(bullet.getCircle().intersectsRectLines(groundElementFlyweight.getRect())) {
-					System.out.println("### HIT ###");
+				Line line = bullet.getLineFromPreviousLocation();
+				Rect groundEleRect = groundElementFlyweight.getRect();
+				boolean intersectsRect = line.intersectsRect(groundEleRect); 
+				if(intersectsRect
+						|| bullet.getCircle().intersectsRectLines(groundElementFlyweight.getRect())) {
 					groundElementMatrix[yCoord][x] = 0;
 					bullet.dispose();
 					bullet = null;
@@ -290,7 +315,15 @@ public class GamePlayingState extends AbstractState {
 	private void checkBulletTargetCollision() {
 		for(int i = targetContainer.size() - 1; i >= 0; i--) {
 			Target target = targetContainer.get(i);
-			if(bullet != null && bullet.getCircle().intersectsRect(target.getRect())) {
+			Line line = null;
+			Rect targetRect = null;
+			if(bullet != null) {
+				line = bullet.getLineFromPreviousLocation();
+				targetRect = target.getRect();
+			}
+			if(bullet != null 
+					&& (line.intersectsRect(targetRect) 
+							|| bullet.getCircle().intersectsRect(target.getRect()))) {
 				bullet.dispose();
 				bullet = null;
 				targetContainer.remove(i);
@@ -300,7 +333,23 @@ public class GamePlayingState extends AbstractState {
 		}
 	}
 
+	private void drawDebugLines() {
+		Line line = bullet.getLineFromPreviousLocation();
+		shapeRenderer.begin(ShapeType.Line);
+		shapeRenderer.line(
+				new com.badlogic.gdx.math.Vector2(
+						MToPx.mToPx(line.getX1()), 
+						MToPx.mToPx(line.getY1())), 
+				new com.badlogic.gdx.math.Vector2(
+						MToPx.mToPx(line.getX2()), 
+						MToPx.mToPx(line.getY2()))
+		);
+		shapeRenderer.end();
+	}
+	
 	public Score getScore() {
 		return score;
 	}
+	
+	
 }

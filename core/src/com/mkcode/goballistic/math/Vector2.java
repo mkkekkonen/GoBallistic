@@ -1,5 +1,7 @@
 package com.mkcode.goballistic.math;
 
+import com.mkcode.goballistic.util.Constants;
+
 public class Vector2 {
 
 	private float x, y, w;
@@ -50,11 +52,37 @@ public class Vector2 {
 		);
 	}
 
+	public float cross(Vector2 v) {
+		return x - v.getY() - v.getX() * y;
+	}
+	
 	public static Vector2 polar(float angle, float len) {
 		return new Vector2(
 				(float)(len * Math.cos(Math.toRadians(angle))), 
 				(float)(len * Math.sin(Math.toRadians(angle)))
 		);
+	}
+	
+	/**
+	 * Assumes we're dealing with a point, not a vector.
+	 * Determines if the point lies on a line.
+	 * Source: https://martin-thoma.com/how-to-check-if-two-line-segments-intersect/
+	 * @param line Line
+	 * @return boolean, if true: point lies on the line
+	 */
+	public boolean isOnLine(Line line) {
+		return Math.abs(getLineThroughOriginCrossProduct(line)) < Constants.EPSILON; // check whether the absolute value of the cross product is close to zero
+	}
+	
+	/**
+	 * Assumes we're dealing with a point, not a vector.
+	 * Determines if the point is on the right side of the line.
+	 * Source: https://martin-thoma.com/how-to-check-if-two-line-segments-intersect/
+	 * @param line
+	 * @return
+	 */
+	public boolean isRightOfLine(Line line) {
+		return getLineThroughOriginCrossProduct(line) < 0;
 	}
 	
 	public float getX() {
@@ -76,5 +104,26 @@ public class Vector2 {
 	@Override
 	public String toString() {
 		return "Vector2 ~ x: " + x + ", y: " + y;
+	}
+	
+	/**
+	 * Move line to go through origin, move the point the same amount,
+	 * and calculate the cross product
+	 * Source: https://martin-thoma.com/how-to-check-if-two-line-segments-intersect/
+	 * @param line Line
+	 * @return float the cross product of the adjusted line and point
+	 */
+	private float getLineThroughOriginCrossProduct(Line line) {
+		// move line to origin
+		Line lineThroughOrigin = new Line(
+				0,
+				0,
+				line.getX2() - line.getX1(),
+				line.getY2() - line.getY1()
+		);
+		Vector2 adjustedPoint = new Vector2(x - line.getX1(), y - line.getY1()); // move point relative to the adjusted line
+		Vector2[] lineEndPoints = lineThroughOrigin.getEndPoints();
+		return lineEndPoints[1].cross(adjustedPoint); 	// cross product of the second line endpoint and 
+																// the point in question adjusted relative to it
 	}
 }

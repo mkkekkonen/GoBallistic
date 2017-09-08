@@ -4,7 +4,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mkcode.goballistic.components.Velocity;
 import com.mkcode.goballistic.ground.Ground;
 import com.mkcode.goballistic.math.Circle;
+import com.mkcode.goballistic.math.Line;
 import com.mkcode.goballistic.math.MToPx;
+import com.mkcode.goballistic.math.Rect;
 import com.mkcode.goballistic.math.Vector2;
 import com.mkcode.goballistic.states.GamePlayingState;
 import com.mkcode.goballistic.util.Constants;
@@ -12,22 +14,24 @@ import com.mkcode.goballistic.util.Constants;
 public class Bullet extends AbstractMovingGameObject {
 	
 	Circle circle;
+	Vector2 previousLocation;
 	
 	public Bullet(float x, float y, float angle, float force, float mass) {
 		super(x, y, Constants.BULLET_DIM, Constants.BULLET_DIM, mass, "bullet.png");
-		this.circle = new Circle(x, y, Constants.BULLET_R, true);
-//		this.velocity = new Velocity(angle, force, mass);
-		this.velocity = new Velocity(mass);
+		circle = new Circle(x, y, Constants.BULLET_R, true);
+		velocity = new Velocity(mass);
 		Vector2 initialAcceleration = Vector2.polar(angle, force / mass);
 		velocity.setVelocity(velocity.getVelocity().add(initialAcceleration));
+		previousLocation = new Vector2();
 	}
 
 	@Override
 	public void update(float deltaTime) {
-		this.velocity.update(deltaTime);
-		this.circle.setCenterPoint(
-				this.circle.getCenterPoint().add(
-						this.velocity.getVelocity().mul(deltaTime)
+		velocity.update(deltaTime);
+		previousLocation = circle.getCenterPoint();
+		circle.setCenterPoint(
+				circle.getCenterPoint().add(
+						velocity.getVelocity().mul(deltaTime)
 				)
 		);
 	}
@@ -35,9 +39,9 @@ public class Bullet extends AbstractMovingGameObject {
 	@Override
 	public void render(SpriteBatch batch) {
 		batch.draw(
-				this.texture, 
-				MToPx.mToPx(this.circle.getCenterPoint().getX()) - this.texture.getWidth() / 2, 
-				MToPx.mToPx(this.circle.getCenterPoint().getY()) + this.texture.getHeight() / 2
+				texture, 
+				MToPx.mToPx(circle.getCenterPoint().getX()) - this.texture.getWidth() / 2, 
+				MToPx.mToPx(circle.getCenterPoint().getY()) + this.texture.getHeight() / 2
 		);
 	}
 	
@@ -47,15 +51,28 @@ public class Bullet extends AbstractMovingGameObject {
 		GamePlayingState.FIRING = false;
 	}
 	
+	public Line getLineFromPreviousLocation() {
+		return new Line(
+				previousLocation.getX(),
+				previousLocation.getY(),
+				getLocation().getX(),
+				getLocation().getY()
+		);
+	}
+	
 	public Vector2 getLocation() {
-		return new Vector2(this.circle.getX(), this.circle.getY());
+		return new Vector2(circle.getX(), circle.getY());
 	}
 	
 	public void setLocation(Vector2 location) {
-		this.circle.setCenterPoint(location);
+		circle.setCenterPoint(location);
 	}
 
 	public Circle getCircle() {
 		return circle;
+	}
+	
+	public Vector2 getPreviousLocation() {
+		return previousLocation;
 	}
 }

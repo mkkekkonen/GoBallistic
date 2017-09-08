@@ -17,8 +17,10 @@ public class Constants {
 			GROUND_ELEMENT_WIDTH = 1,
 			GROUND_TOP_OFFSET = 6,
 			GROUND_WIDTH = 64,
+			INPUT_ANGLE_DEFAULT_VALUE = 45,
+			INPUT_FORCE_DEFAULT_VALUE = 500,
 			LABEL_OFFSET_X = 225,
-			LARGE_TARGET_AMOUNT = 1,
+			LARGE_TARGET_AMOUNT = 2,
 			LARGE_TARGET_DIM = 2,
 			LARGE_TARGET_WEIGHT = 30,
 			MAIN_MENU_BUTTON_OFFSET_X = 100,
@@ -38,7 +40,7 @@ public class Constants {
 			SCORE_TIME_OFFSET_Y = 400,
 			SCORE_VALUE_OFFSET_X = 560,
 			START_GROUND_HEIGHT = 12,
-			SMALL_TARGET_AMOUNT = 0,
+			SMALL_TARGET_AMOUNT = 4,
 			SMALL_TARGET_DIM = 1,
 			SMALL_TARGET_WEIGHT = 15,
 			TITLE_OFFSET_X = 130,
@@ -52,6 +54,7 @@ public class Constants {
 			WND_WIDTH = 640;
 	
 	public static final float
+			EPSILON = 0.00001f,
 			BULLET_R = 0.5f;
 	
 	public static final String

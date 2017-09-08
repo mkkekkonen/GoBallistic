@@ -1,6 +1,7 @@
 package com.mkcode.goballistic.input;
 
 import com.badlogic.gdx.Input.TextInputListener;
+import com.mkcode.goballistic.resources.Resources;
 import com.mkcode.goballistic.states.ScoreboardState;
 
 public class NameInputListener implements TextInputListener {
@@ -17,5 +18,7 @@ public class NameInputListener implements TextInputListener {
 	}
 
 	@Override
-	public void canceled() {}
+	public void canceled() {
+		scoreboard.setName(Resources.tr("empty"));
+	}
 }
