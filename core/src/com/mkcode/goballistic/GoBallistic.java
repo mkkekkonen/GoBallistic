@@ -44,7 +44,7 @@ public class GoBallistic extends ApplicationAdapter {
 		// music
 		music = Gdx.audio.newMusic(Gdx.files.internal("HeartOfMachine.ogg"));
 		music.setLooping(true);
-//		music.play();
+		music.play();
 		
 		prevTime = curTime = System.nanoTime();	// initialize frame/physics timing
 		
@@ -65,8 +65,8 @@ public class GoBallistic extends ApplicationAdapter {
 		
 		curTime = System.nanoTime();			// get current time in nanoseconds
 		double nsPerFrame = curTime - prevTime;	// calculate frame time
-		stateManager.update((float)(nsPerFrame / 1.0E9)); // update game state, pass in time delta
-//		stateManager.update(0.01f);				// debug
+//		stateManager.update((float)(nsPerFrame / 1.0E9)); // update game state, pass in time delta
+		stateManager.update(0.01f);				// debug
 		prevTime = curTime;						// update previous time
 	}
 	

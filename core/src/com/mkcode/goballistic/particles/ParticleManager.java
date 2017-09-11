@@ -18,8 +18,8 @@ public class ParticleManager {
 		for(int i = particleContainer.size() - 1; i >= 0; i--) {
 			Particle particle = particleContainer.get(i);
 			if(particle.lifetimeElapsed()) {
-				particleContainer.remove(i);
 				particle.dispose();
+				particleContainer.remove(i);
 			}
 			else
 				particle.update(deltaTime);

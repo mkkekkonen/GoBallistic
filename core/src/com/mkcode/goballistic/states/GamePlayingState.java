@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.mkcode.goballistic.animation.Animation;
+import com.mkcode.goballistic.animation.ExplodeAnimation;
 import com.mkcode.goballistic.fonts.FontManager;
 import com.mkcode.goballistic.gameobjects.Bullet;
 import com.mkcode.goballistic.gameobjects.GroundElement;
@@ -19,6 +22,7 @@ import com.mkcode.goballistic.ground.Ground;
 import com.mkcode.goballistic.ground.GroundGenerator;
 import com.mkcode.goballistic.input.InputType;
 import com.mkcode.goballistic.input.NumberInput;
+import com.mkcode.goballistic.math.Circle;
 import com.mkcode.goballistic.math.Line;
 import com.mkcode.goballistic.math.MToPx;
 import com.mkcode.goballistic.math.Rect;
@@ -40,7 +44,9 @@ public class GamePlayingState extends AbstractState {
 	private Turret turret;
 	private Bullet bullet = null;
 	private List<Target> targetContainer = null;
+	private List<Animation> animationContainer = null;
 	private ParticleManager particleManager;
+	private Sound explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
 	
 	private ControlsBackground controlsBackground;
 	private NumberInput angleInput, forceInput;
@@ -58,6 +64,7 @@ public class GamePlayingState extends AbstractState {
 		displayExitButton = true;
 		groundElementFlyweight = new GroundElement();
 		turret = new Turret();
+		animationContainer = new ArrayList<Animation>();
 		particleManager = new ParticleManager();
 		
 		controlsBackground = new ControlsBackground(0, 0);
@@ -129,6 +136,16 @@ public class GamePlayingState extends AbstractState {
 				target.update(deltaTime, ground);
 		}
 		
+		for(int i = animationContainer.size() - 1; i >= 0; i--) {
+			Animation animation = animationContainer.get(i);
+			if(animation.hasEnded()) {
+				animation.dispose();
+				animationContainer.remove(i);
+			}
+			else
+				animation.update();
+		}
+		
 		particleManager.update(deltaTime);
 		
 		if(Mouse.clicked()) {
@@ -146,10 +163,11 @@ public class GamePlayingState extends AbstractState {
 			if(fireButton.getCircle().containsPoint(Gdx.input.getX(), Gdx.input.getY()) && !FIRING) {
 				FIRING = true;
 				score.incrementShots(); // update score
-				float[] barrelEndCoords = sineBulletLocation(this.angleInput.getValue());
+//				Vector2 barrelEndCoords = sineBulletLocation(this.angleInput.getValue());
+				Vector2 barrelEndCoords = Vector2.polar(this.angleInput.getValue(), 3);
 				bullet = new Bullet(
-						barrelEndCoords[0] + Constants.TURRET_OFFSET + Constants.TURRET_WIDTH / 2, 
-						barrelEndCoords[1] + GroundGenerator.getTurretLevel(),
+						barrelEndCoords.getX() + Constants.TURRET_OFFSET + Constants.TURRET_WIDTH / 2, 
+						barrelEndCoords.getY() + GroundGenerator.getTurretLevel() + Constants.BULLET_DIM,
 						angleInput.getValue(), 
 						forceInput.getValue(),
 						Constants.BULLET_WEIGHT
@@ -170,6 +188,8 @@ public class GamePlayingState extends AbstractState {
 		}
 		for(Target target : targetContainer)
 			target.render(batch);
+		for(Animation animation : animationContainer)
+			animation.render(batch);
 		particleManager.render(batch);
 		
 		scoreFont.draw(batch, Resources.tr("shots"), Constants.SCORE_LABEL_OFFSET_X, Constants.SCORE_SHOTS_OFFSET_Y);
@@ -193,8 +213,9 @@ public class GamePlayingState extends AbstractState {
 //		fontManager.getFont("font10").draw(batch, "X: " + Gdx.input.getX(), 50, 480 - 50);
 //		fontManager.getFont("font10").draw(batch, "Y: " + Gdx.input.getY(), 50, 480 - 70);
 		
-//		if(bullet != null)
-//			drawDebugLines();
+		if(bullet != null)
+			drawDebugLines();
+		drawDebugRect();
 	}
 	
 	@Override
@@ -208,6 +229,8 @@ public class GamePlayingState extends AbstractState {
 			bullet.dispose();
 		for(Target target : targetContainer)
 			target.dispose();
+		for(Animation animation : animationContainer)
+			animation.dispose();
 		particleManager.dispose();
 		controlsBackground.dispose();
 		angleInput.dispose();
@@ -222,6 +245,10 @@ public class GamePlayingState extends AbstractState {
 			bullet.dispose();
 		for(Target target : targetContainer)
 			target.dispose();
+		for(int i = animationContainer.size() - 1; i >= 0; i--) {
+			animationContainer.get(i).dispose();
+			animationContainer.remove(i);
+		}
 		particleManager.dispose();
 	}
 	
@@ -253,19 +280,19 @@ public class GamePlayingState extends AbstractState {
 		return new Target(x, y, size);
 	}
 	
-	private float[] sineBulletLocation(float angle) {
-		
-		double x, y;
-		
-		// law of sines
-		y = Math.sin(Math.toRadians(angle)) * (3 / Math.sin(Math.toRadians(90)));
-		
-		// Pythagorean theorem
-		double xPow2 = (Math.pow(3, 2) - Math.pow(y, 2));
-		x = Math.sqrt(xPow2);
-		
-		return new float[] { (float)x, (float)y };
-	}
+//	private Vector2 sineBulletLocation(float angle) {
+//		
+//		double x, y;
+//		
+//		// law of sines
+//		y = Math.sin(Math.toRadians(angle)) * (4 / Math.sin(Math.toRadians(90)));
+//		
+//		// Pythagorean theorem
+//		double xPow2 = (Math.pow(4, 2) - Math.pow(y, 2));
+//		x = Math.sqrt(xPow2);
+//		
+//		return new Vector2((float)x, (float)y);
+//	}
 	
 	private void checkBulletCollision() {
 		checkBulletGroundCollision();
@@ -305,6 +332,7 @@ public class GamePlayingState extends AbstractState {
 				if(intersectsRect
 						|| bullet.getCircle().intersectsRectLines(groundEleRect)) {
 					groundElementMatrix[yCoord][x] = 0;
+					explosionSound.play();
 					particleManager.createParticles(
 							bullet.getCircle().getX(), 
 							bullet.getCircle().getY()
@@ -325,9 +353,14 @@ public class GamePlayingState extends AbstractState {
 				line = bullet.getLineFromPreviousLocation();
 				targetRect = target.getRect();
 			}
+			Circle bulletCircle = null;
+			if(bullet != null)
+				bulletCircle = bullet.getCircle();
 			if(bullet != null 
 					&& (line.intersectsRect(targetRect) 
-							|| bullet.getCircle().intersectsRect(target.getRect()))) {
+							|| bulletCircle.intersectsRect(target.getRect()))) {
+				explosionSound.play();
+				animationContainer.add(new ExplodeAnimation(bullet.getCircle().getX(), bullet.getCircle().getY()));
 				bullet.dispose();
 				bullet = null;
 				targetContainer.remove(i);
@@ -349,6 +382,24 @@ public class GamePlayingState extends AbstractState {
 						MToPx.mToPx(line.getY2()))
 		);
 		shapeRenderer.end();
+	}
+	
+	private void drawDebugRect() {
+		if(targetContainer.size() > 0 && targetContainer.get(0) != null) {
+			Line[] bounds = targetContainer.get(0).getRect().getBounds();
+			for(Line line : bounds) {
+				shapeRenderer.begin(ShapeType.Line);
+				shapeRenderer.line(
+						new com.badlogic.gdx.math.Vector2(
+								MToPx.mToPx(line.getX1()), 
+								MToPx.mToPx(line.getY1())), 
+						new com.badlogic.gdx.math.Vector2(
+								MToPx.mToPx(line.getX2()), 
+								MToPx.mToPx(line.getY2()))
+				);
+				shapeRenderer.end();
+			}
+		}
 	}
 	
 	public Score getScore() {
