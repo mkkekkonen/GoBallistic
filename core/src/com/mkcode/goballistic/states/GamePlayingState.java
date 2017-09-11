@@ -213,9 +213,9 @@ public class GamePlayingState extends AbstractState {
 //		fontManager.getFont("font10").draw(batch, "X: " + Gdx.input.getX(), 50, 480 - 50);
 //		fontManager.getFont("font10").draw(batch, "Y: " + Gdx.input.getY(), 50, 480 - 70);
 		
-		if(bullet != null)
-			drawDebugLines();
-		drawDebugRect();
+//		if(bullet != null)
+//			drawDebugLines();
+//		drawDebugRect();
 	}
 	
 	@Override
@@ -358,7 +358,7 @@ public class GamePlayingState extends AbstractState {
 				bulletCircle = bullet.getCircle();
 			if(bullet != null 
 					&& (line.intersectsRect(targetRect) 
-							|| bulletCircle.intersectsRect(target.getRect()))) {
+							/*|| bulletCircle.intersectsRect(target.getRect())*/)) {
 				explosionSound.play();
 				animationContainer.add(new ExplodeAnimation(bullet.getCircle().getX(), bullet.getCircle().getY()));
 				bullet.dispose();
