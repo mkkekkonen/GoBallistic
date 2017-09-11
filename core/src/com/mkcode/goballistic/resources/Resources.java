@@ -65,6 +65,6 @@ public class Resources {
 		enResources.put("points", "Points");
 		enResources.put("ranking", "Ranking");
 		enResources.put("typeName", "Input your name");
-		fiResources.put("empty", "(empty)");
+		enResources.put("empty", "(empty)");
 	}
 }

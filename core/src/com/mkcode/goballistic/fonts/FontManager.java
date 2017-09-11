@@ -18,8 +18,8 @@ public class FontManager {
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("data-latin.ttf"));
 		createFont("titleFont", 40);
 		createFont("font35", 35);
+		createFont("font30", 30);
 		createFont("font10", 10);
-		createFont("inputFont", 30);
 		createFont("labelFont", 25);
 		createFont("scoreFont", 20);
 	}

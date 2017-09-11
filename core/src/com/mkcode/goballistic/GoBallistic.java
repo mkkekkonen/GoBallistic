@@ -11,9 +11,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mkcode.goballistic.fonts.FontManager;
 import com.mkcode.goballistic.resources.Resources;
+import com.mkcode.goballistic.score.HighScoreManager;
 import com.mkcode.goballistic.states.AbstractState;
 import com.mkcode.goballistic.states.GamePlayingState;
 import com.mkcode.goballistic.states.StateManager;
+import com.mkcode.mousefix.Mouse;
 
 public class GoBallistic extends ApplicationAdapter {
 	
@@ -21,6 +23,7 @@ public class GoBallistic extends ApplicationAdapter {
 	FontManager fontManager;
 	StateManager stateManager;	/* object that handles the different states of the game,
 								 * such as menus, game playing etc. */
+	HighScoreManager highScoreManager; // object that stores and serializes/deserializes high scores
 	Resources resources;		// translation
 	Music music;
 
@@ -35,7 +38,8 @@ public class GoBallistic extends ApplicationAdapter {
 		
 		fontManager = new FontManager();
 		resources = new Resources(); // translation
-		stateManager = new StateManager(fontManager); // initialize states
+		highScoreManager = new HighScoreManager();
+		stateManager = new StateManager(fontManager, highScoreManager); // initialize states
 		
 		// music
 		music = Gdx.audio.newMusic(Gdx.files.internal("HeartOfMachine.ogg"));
@@ -56,6 +60,8 @@ public class GoBallistic extends ApplicationAdapter {
 		batch.begin();								// begin drawing sprites
 		stateManager.render(batch);
 		batch.end();								// end drawing sprites
+		
+		Mouse.update(); // update mouse fix class
 		
 		curTime = System.nanoTime();			// get current time in nanoseconds
 		double nsPerFrame = curTime - prevTime;	// calculate frame time

@@ -41,7 +41,7 @@ public class Bullet extends AbstractMovingGameObject {
 		batch.draw(
 				texture, 
 				MToPx.mToPx(circle.getCenterPoint().getX()) - this.texture.getWidth() / 2, 
-				MToPx.mToPx(circle.getCenterPoint().getY()) + this.texture.getHeight() / 2
+				MToPx.mToPx(circle.getCenterPoint().getY()) - this.texture.getHeight() / 2
 		);
 	}
 	

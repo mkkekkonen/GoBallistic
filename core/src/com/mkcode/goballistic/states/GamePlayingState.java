@@ -30,6 +30,7 @@ import com.mkcode.goballistic.ui.FireButton;
 import com.mkcode.goballistic.ui.ControlsBackground;
 import com.mkcode.goballistic.ui.ExitButton;
 import com.mkcode.goballistic.util.Constants;
+import com.mkcode.mousefix.Mouse;
 
 public class GamePlayingState extends AbstractState {
 
@@ -43,25 +44,22 @@ public class GamePlayingState extends AbstractState {
 	private NumberInput angleInput, forceInput;
 	private BitmapFont labelFont, scoreFont;
 	private FireButton fireButton;
-	private ExitButton exitButton;
 	
 	private Score score;
 	
 	private ShapeRenderer shapeRenderer;
 	
-	public static boolean 
-			ANGLE_INPUT_SHOWN = false,
-			FORCE_INPUT_SHOWN = false,
-			FIRING = false;
+	public static boolean FIRING = false;
 	
 	public GamePlayingState(StateManager stateManager, FontManager fontManager) {
 		super(stateManager, fontManager);
+		displayExitButton = true;
 		groundElementFlyweight = new GroundElement();
 		turret = new Turret();
 		controlsBackground = new ControlsBackground(0, 0);
 		angleInput = new NumberInput(
 				turret,
-				fontManager.getFont("inputFont"), 
+				fontManager.getFont("font30"), 
 				Constants.NUMBER_INPUT_OFFSET_X, 
 				55, 
 				Resources.tr("angle"),
@@ -69,7 +67,7 @@ public class GamePlayingState extends AbstractState {
 		);
 		forceInput = new NumberInput(
 				turret,
-				fontManager.getFont("inputFont"), 
+				fontManager.getFont("font30"), 
 				Constants.NUMBER_INPUT_OFFSET_X, 
 				5, 
 				Resources.tr("force"),
@@ -78,10 +76,6 @@ public class GamePlayingState extends AbstractState {
 		labelFont = fontManager.getFont("labelFont");
 		scoreFont = fontManager.getFont("scoreFont");
 		fireButton = new FireButton();
-		exitButton = new ExitButton(new Vector2(
-				Constants.WND_WIDTH - Constants.EXIT_BUTTON_W - Constants.EXIT_BUTTON_MARGIN, 
-				Constants.EXIT_BUTTON_MARGIN
-		));
 		Gdx.gl.glLineWidth(1);
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setColor(Color.RED);
@@ -100,6 +94,8 @@ public class GamePlayingState extends AbstractState {
 	
 	@Override
 	public void update(float deltaTime) {
+		
+		super.update(deltaTime);
 		
 		if(this.targetContainer.size() == 0)
 			changeState("scoreboard");
@@ -129,17 +125,15 @@ public class GamePlayingState extends AbstractState {
 				target.update(deltaTime, ground);
 		}
 		
-		if(Gdx.input.isTouched()) {
+		if(Mouse.clicked()) {
 			
 			float yCoord = Constants.WND_HEIGHT - Gdx.input.getY();
 			
-			if(angleInput.getRect().containsPoint(Gdx.input.getX(), yCoord) && !ANGLE_INPUT_SHOWN) {
-				ANGLE_INPUT_SHOWN = true;
+			if(angleInput.getRect().containsPoint(Gdx.input.getX(), yCoord)) {
 				angleInput.getInput();
 			}
 			
-			else if(forceInput.getRect().containsPoint(Gdx.input.getX(), yCoord) && !FORCE_INPUT_SHOWN) {
-				FORCE_INPUT_SHOWN = true;
+			else if(forceInput.getRect().containsPoint(Gdx.input.getX(), yCoord)) {
 				forceInput.getInput();
 			}
 			
@@ -155,9 +149,6 @@ public class GamePlayingState extends AbstractState {
 						Constants.BULLET_WEIGHT
 				);
 			}
-			
-			if(exitButton.getRect().containsPoint(Gdx.input.getX(), yCoord))
-				changeState("mainMenu");
 		}
 		
 		this.score.updateTime();
@@ -202,7 +193,8 @@ public class GamePlayingState extends AbstractState {
 	@Override
 	public void dispose() {
 		super.dispose();
-		ground.dispose();
+		if(ground != null)
+			ground.dispose();
 		groundElementFlyweight.dispose();
 		turret.dispose();
 		if(bullet != null)

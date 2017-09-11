@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mkcode.goballistic.fonts.FontManager;
+import com.mkcode.goballistic.score.HighScoreManager;
 
 public class StateManager {
 
@@ -12,11 +13,12 @@ public class StateManager {
 	
 	String currentState = "mainMenu"; // the first state in the game
 	
-	public StateManager(FontManager fontManager) {
+	public StateManager(FontManager fontManager, HighScoreManager highScoreManager) {
 		this.gameStates = new HashMap<String, AbstractState>(); // initialize game state dictionary
 		this.gameStates.put("mainMenu", new MainMenuState(this, fontManager));
 		this.gameStates.put("gamePlaying", new GamePlayingState(this, fontManager));
-		this.gameStates.put("scoreboard", new ScoreboardState(this, fontManager));
+		this.gameStates.put("scoreboard", new ScoreboardState(this, fontManager, highScoreManager));
+		this.gameStates.put("highScores", new HighScoresState(this, fontManager, highScoreManager));
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -34,12 +36,12 @@ public class StateManager {
 	
 	public void changeState(String newState) {
 		this.currentState = newState;
-		if(newState == "gamePlaying" || newState == "scoreboard")
-			this.gameStates.get(newState).init();
 		if(newState == "scoreboard") {
 			ScoreboardState sbState = (ScoreboardState)this.gameStates.get(newState);
 			GamePlayingState gpState = (GamePlayingState)this.gameStates.get("gamePlaying");
 			sbState.setScore(gpState.getScore());
 		}
+		if(newState == "gamePlaying" || newState == "scoreboard")
+			this.gameStates.get(newState).init();
 	}
 }
