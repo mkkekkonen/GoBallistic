@@ -17,11 +17,8 @@ public class Bullet extends AbstractMovingGameObject {
 	Vector2 previousLocation;
 	
 	public Bullet(float x, float y, float angle, float force, float mass) {
-		super(x, y, Constants.BULLET_DIM, Constants.BULLET_DIM, mass, "bullet.png");
+		super(x, y, Constants.BULLET_DIM, Constants.BULLET_DIM, angle, force, mass, "bullet.png");
 		circle = new Circle(x, y, Constants.BULLET_R, true);
-		velocity = new Velocity(mass);
-		Vector2 initialAcceleration = Vector2.polar(angle, force / mass);
-		velocity.setVelocity(velocity.getVelocity().add(initialAcceleration));
 		previousLocation = new Vector2();
 	}
 

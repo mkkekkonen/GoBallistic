@@ -9,9 +9,14 @@ public abstract class AbstractMovingGameObject extends AbstractCollidableGameObj
 
 	protected Velocity velocity;
 	
-	protected AbstractMovingGameObject(float x, float y, float width, float height, float mass, String fileName) {
+	protected AbstractMovingGameObject(float x, float y, float width, float height, float angle, float force, float mass, String fileName) {
 		super(x, y, width, height, fileName);
 		this.velocity = new Velocity(mass);
+		Vector2 initialAcceleration;
+		if(!(this instanceof Target)) { 
+			initialAcceleration = Vector2.polar(angle, force / mass);
+			velocity.setVelocity(velocity.getVelocity().add(initialAcceleration));
+		}
 	}
 
 	@Override

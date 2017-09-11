@@ -2,10 +2,10 @@ package com.mkcode.goballistic.ground;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.mkcode.goballistic.fonts.FontManager;
 import com.mkcode.goballistic.util.Constants;
+import com.mkcode.goballistic.util.Random;
 
 public class GroundGenerator {
 
@@ -18,8 +18,6 @@ public class GroundGenerator {
 		List<Integer> groundElements = ground.getGroundElements();
 		Integer[][] groundElementMatrix = ground.getGroundElementMatrix();
 		
-		Random random = new Random(System.currentTimeMillis());
-		
 		int previous = Constants.START_GROUND_HEIGHT;
 		
 		boolean turretLevelSet = false;
@@ -29,7 +27,7 @@ public class GroundGenerator {
 			int delta = 0;
 			// tank on level ground
 			if(i <= Constants.PLATFORM_OFFSET || i >= Constants.PLATFORM_WIDTH + Constants.PLATFORM_OFFSET) {
-				delta = random.nextInt(Constants.MAX_GROUND_ABS_HEIGHT_DELTA * 2 + 1);
+				delta = Random.getRandom().nextInt(Constants.MAX_GROUND_ABS_HEIGHT_DELTA * 2 + 1);
 				delta -= Constants.MAX_GROUND_ABS_HEIGHT_DELTA;
 			}
 			

@@ -20,6 +20,8 @@ public class Target extends AbstractMovingGameObject {
 				targetSize == TargetSize.SMALL ? Constants.SMALL_TARGET_DIM : Constants.LARGE_TARGET_DIM, 
 				targetSize == TargetSize.SMALL ? Constants.SMALL_TARGET_DIM : Constants.LARGE_TARGET_DIM, 
 				targetSize == TargetSize.SMALL ? Constants.SMALL_TARGET_WEIGHT : Constants.LARGE_TARGET_WEIGHT,
+				0,
+				0,				
 				"target10px.png"
 		);
 		this.targetSize = targetSize;

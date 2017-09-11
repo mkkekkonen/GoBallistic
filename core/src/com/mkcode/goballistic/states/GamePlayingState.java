@@ -2,7 +2,6 @@ package com.mkcode.goballistic.states;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -24,12 +23,14 @@ import com.mkcode.goballistic.math.Line;
 import com.mkcode.goballistic.math.MToPx;
 import com.mkcode.goballistic.math.Rect;
 import com.mkcode.goballistic.math.Vector2;
+import com.mkcode.goballistic.particles.ParticleManager;
 import com.mkcode.goballistic.resources.Resources;
 import com.mkcode.goballistic.score.Score;
 import com.mkcode.goballistic.ui.FireButton;
 import com.mkcode.goballistic.ui.ControlsBackground;
 import com.mkcode.goballistic.ui.ExitButton;
 import com.mkcode.goballistic.util.Constants;
+import com.mkcode.goballistic.util.Random;
 import com.mkcode.mousefix.Mouse;
 
 public class GamePlayingState extends AbstractState {
@@ -39,6 +40,7 @@ public class GamePlayingState extends AbstractState {
 	private Turret turret;
 	private Bullet bullet = null;
 	private List<Target> targetContainer = null;
+	private ParticleManager particleManager;
 	
 	private ControlsBackground controlsBackground;
 	private NumberInput angleInput, forceInput;
@@ -56,6 +58,8 @@ public class GamePlayingState extends AbstractState {
 		displayExitButton = true;
 		groundElementFlyweight = new GroundElement();
 		turret = new Turret();
+		particleManager = new ParticleManager();
+		
 		controlsBackground = new ControlsBackground(0, 0);
 		angleInput = new NumberInput(
 				turret,
@@ -125,6 +129,8 @@ public class GamePlayingState extends AbstractState {
 				target.update(deltaTime, ground);
 		}
 		
+		particleManager.update(deltaTime);
+		
 		if(Mouse.clicked()) {
 			
 			float yCoord = Constants.WND_HEIGHT - Gdx.input.getY();
@@ -164,6 +170,7 @@ public class GamePlayingState extends AbstractState {
 		}
 		for(Target target : targetContainer)
 			target.render(batch);
+		particleManager.render(batch);
 		
 		scoreFont.draw(batch, Resources.tr("shots"), Constants.SCORE_LABEL_OFFSET_X, Constants.SCORE_SHOTS_OFFSET_Y);
 		scoreFont.draw(batch, Resources.tr("time"), Constants.SCORE_LABEL_OFFSET_X, Constants.SCORE_TIME_OFFSET_Y);
@@ -201,6 +208,7 @@ public class GamePlayingState extends AbstractState {
 			bullet.dispose();
 		for(Target target : targetContainer)
 			target.dispose();
+		particleManager.dispose();
 		controlsBackground.dispose();
 		angleInput.dispose();
 		forceInput.dispose();
@@ -214,6 +222,7 @@ public class GamePlayingState extends AbstractState {
 			bullet.dispose();
 		for(Target target : targetContainer)
 			target.dispose();
+		particleManager.dispose();
 	}
 	
 	private void changeState(String stateName) {
@@ -226,18 +235,17 @@ public class GamePlayingState extends AbstractState {
 			for(Target target : targetContainer)
 				target.dispose();
 		targetContainer = new ArrayList<Target>();
-		Random random = new Random(System.currentTimeMillis());
 		for(int i = 0; i < Constants.SMALL_TARGET_AMOUNT; i++)
-			targetContainer.add(generateTarget(TargetSize.SMALL, random));
+			targetContainer.add(generateTarget(TargetSize.SMALL));
 		for(int i = 0; i < Constants.LARGE_TARGET_AMOUNT; i++)
-			targetContainer.add(generateTarget(TargetSize.LARGE, random));
+			targetContainer.add(generateTarget(TargetSize.LARGE));
 	}
 	
-	private Target generateTarget(TargetSize size, Random random) {
-		float x = random.nextFloat() * Constants.WND_ELE_WIDTH / 2;
+	private Target generateTarget(TargetSize size) {
+		float x = Random.getRandom().nextFloat() * Constants.WND_ELE_WIDTH / 2;
 		x += (Constants.WND_ELE_WIDTH / 2);
 		x -= (size == TargetSize.SMALL ? Constants.SMALL_TARGET_DIM : Constants.LARGE_TARGET_DIM);
-		float y = random.nextFloat() * (Constants.WND_ELE_HEIGHT 
+		float y = Random.getRandom().nextFloat() * (Constants.WND_ELE_HEIGHT 
 				- Constants.MAX_GROUND_HEIGHT 
 				- Constants.CONTROLS_AREA_HEIGHT
 				- (size == TargetSize.SMALL ? Constants.SMALL_TARGET_DIM : Constants.LARGE_TARGET_DIM));
@@ -295,8 +303,12 @@ public class GamePlayingState extends AbstractState {
 				Rect groundEleRect = groundElementFlyweight.getRect();
 				boolean intersectsRect = line.intersectsRect(groundEleRect); 
 				if(intersectsRect
-						|| bullet.getCircle().intersectsRectLines(groundElementFlyweight.getRect())) {
+						|| bullet.getCircle().intersectsRectLines(groundEleRect)) {
 					groundElementMatrix[yCoord][x] = 0;
+					particleManager.createParticles(
+							bullet.getCircle().getX(), 
+							bullet.getCircle().getY()
+					);
 					bullet.dispose();
 					bullet = null;
 				}

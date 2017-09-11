@@ -68,7 +68,8 @@ public class Constants {
 	
 	public static final float
 			EPSILON = 0.00001f,
-			BULLET_R = 0.5f;
+			BULLET_R = 0.5f,
+			PARTICLE_DIM = 0.5f;
 	
 	public static final String
 			ASSETS_DIR = "assets/",
