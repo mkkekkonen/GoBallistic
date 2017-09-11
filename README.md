@@ -1,4 +1,4 @@
-GO BALLISTIC
+# Go Ballistic!
 
 A physics game.
 
