@@ -13,7 +13,7 @@ public class FireButton extends AbstractUIElement {
 	
 	public FireButton() {
 		super("button.png");
-		this.circle = new Circle(370, MToPx.mToPx(Constants.GAME_AREA_HEIGHT + Constants.CONTROLS_AREA_HEIGHT / 2), 30, false);
+		this.circle = new Circle(500, MToPx.mToPx(Constants.GAME_AREA_HEIGHT + Constants.CONTROLS_AREA_HEIGHT / 2), 30, false);
 	}
 	
 	@Override

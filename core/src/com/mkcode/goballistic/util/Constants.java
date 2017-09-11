@@ -5,6 +5,9 @@ import com.mkcode.goballistic.math.Vector2;
 public class Constants {
 
 	public static final int
+			ANGLE_BUTTON_DELTA = 5,
+			ARROW_UP_OFFSET_X = 230,
+			ARROW_DOWN_OFFSET_X = 270,
 			BARREL_LENGTH = 40,
 			BULLET_DIM = 1,
 			BULLET_WEIGHT = 7,
@@ -13,6 +16,7 @@ public class Constants {
 			EXIT_BUTTON_H = 40,
 			EXIT_BUTTON_MARGIN = 10,
 			EXIT_BUTTON_W = 50,
+			FORCE_BUTTON_DELTA = 50,
 			GAME_AREA_HEIGHT = 37,
 			GROUND_ELEMENT_WIDTH = 1,
 			GROUND_TOP_OFFSET = 6,
@@ -23,8 +27,8 @@ public class Constants {
 			HIGH_SCORES_POINTS_OFFSET_X = 300,
 			INPUT_ANGLE_DEFAULT_VALUE = 45,
 			INPUT_FORCE_DEFAULT_VALUE = 500,
-			LABEL_OFFSET_X = 225,
-			LARGE_TARGET_AMOUNT = 1,
+			LABEL_OFFSET_X = 330,
+			LARGE_TARGET_AMOUNT = 3,
 			LARGE_TARGET_DIM = 2,
 			LARGE_TARGET_WEIGHT = 30,
 			MAIN_MENU_BUTTON_OFFSET_X = 100,

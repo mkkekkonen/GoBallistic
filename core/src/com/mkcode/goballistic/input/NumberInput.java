@@ -18,16 +18,16 @@ public class NumberInput extends AbstractInput {
 		this.turret = turret;
 		this.inputType = inputType;
 		if(this.inputType == InputType.ANGLE)
-			this.value = Constants.INPUT_ANGLE_DEFAULT_VALUE;
+			value = Constants.INPUT_ANGLE_DEFAULT_VALUE;
 		else // force
-			this.value = Constants.INPUT_FORCE_DEFAULT_VALUE;
-		this.listener = new NumberInputListener(this, inputType);
+			value = Constants.INPUT_FORCE_DEFAULT_VALUE;
+		listener = new NumberInputListener(this, inputType);
 	}
 	
 	@Override
 	public void render(SpriteBatch batch) {
 		super.render(batch);
-		this.font.draw(batch, Float.toString(value), rect.getX() + marginX, rect.getY() + marginY);
+		font.draw(batch, Float.toString(value), rect.getX() + marginX, rect.getY() + marginY);
 	}
 	
 	public void getInput() {
@@ -40,9 +40,17 @@ public class NumberInput extends AbstractInput {
 	
 	public void setValue(float value) {
 		this.value = value;
-		if(this.inputType == InputType.ANGLE)
-			this.turret.setAngle(value);
-		else if(this.inputType == InputType.FORCE)
-			this.turret.setForce(value);
+		if(inputType == InputType.ANGLE)
+			turret.setAngle(value);
+		else if(inputType == InputType.FORCE)
+			turret.setForce(value);
+	}
+	
+	public void increaseValue(float delta) {
+		setValue(value + delta);
+	}
+	
+	public void decreaseValue(float delta) {
+		setValue(value - delta);
 	}
 }

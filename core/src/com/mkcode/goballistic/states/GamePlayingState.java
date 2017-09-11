@@ -31,6 +31,7 @@ import com.mkcode.goballistic.particles.ParticleManager;
 import com.mkcode.goballistic.resources.Resources;
 import com.mkcode.goballistic.score.Score;
 import com.mkcode.goballistic.ui.FireButton;
+import com.mkcode.goballistic.ui.ArrowButton;
 import com.mkcode.goballistic.ui.ControlsBackground;
 import com.mkcode.goballistic.ui.ExitButton;
 import com.mkcode.goballistic.util.Constants;
@@ -52,6 +53,8 @@ public class GamePlayingState extends AbstractState {
 	private NumberInput angleInput, forceInput;
 	private BitmapFont labelFont, scoreFont;
 	private FireButton fireButton;
+	private ArrowButton increaseAngleButton, decreaseAngleButton,
+		increaseForceButton, decreaseForceButton;
 	
 	private Score score;
 	
@@ -76,6 +79,8 @@ public class GamePlayingState extends AbstractState {
 				Resources.tr("angle"),
 				InputType.ANGLE
 		);
+		increaseAngleButton = new ArrowButton(new Vector2(Constants.ARROW_UP_OFFSET_X, 62), true);
+		decreaseAngleButton = new ArrowButton(new Vector2(Constants.ARROW_DOWN_OFFSET_X, 62), false);
 		forceInput = new NumberInput(
 				turret,
 				fontManager.getFont("font30"), 
@@ -84,6 +89,8 @@ public class GamePlayingState extends AbstractState {
 				Resources.tr("force"),
 				InputType.FORCE
 		);
+		increaseForceButton = new ArrowButton(new Vector2(Constants.ARROW_UP_OFFSET_X, 12), true);
+		decreaseForceButton = new ArrowButton(new Vector2(Constants.ARROW_DOWN_OFFSET_X, 12), false);
 		labelFont = fontManager.getFont("labelFont");
 		scoreFont = fontManager.getFont("scoreFont");
 		fireButton = new FireButton();
@@ -173,6 +180,18 @@ public class GamePlayingState extends AbstractState {
 						Constants.BULLET_WEIGHT
 				);
 			}
+			
+			if(increaseAngleButton.getRect().containsPoint(Gdx.input.getX(), yCoord))
+				angleInput.increaseValue(Constants.ANGLE_BUTTON_DELTA);
+			
+			if(decreaseAngleButton.getRect().containsPoint(Gdx.input.getX(), yCoord))
+				angleInput.decreaseValue(Constants.ANGLE_BUTTON_DELTA);
+			
+			if(increaseForceButton.getRect().containsPoint(Gdx.input.getX(), yCoord))
+				forceInput.increaseValue(Constants.FORCE_BUTTON_DELTA);
+			
+			if(decreaseForceButton.getRect().containsPoint(Gdx.input.getX(), yCoord))
+				forceInput.decreaseValue(Constants.FORCE_BUTTON_DELTA);
 		}
 		
 		this.score.updateTime();
@@ -204,7 +223,11 @@ public class GamePlayingState extends AbstractState {
 		
 		controlsBackground.render(batch);
 		angleInput.render(batch);
+		increaseAngleButton.render(batch);
+		decreaseAngleButton.render(batch);
 		forceInput.render(batch);
+		increaseForceButton.render(batch);
+		decreaseForceButton.render(batch);
 		labelFont.draw(batch, Resources.tr("angle"), Constants.LABEL_OFFSET_X, 85);
 		labelFont.draw(batch, Resources.tr("force"), Constants.LABEL_OFFSET_X, 35);
 		fireButton.render(batch);
@@ -213,9 +236,9 @@ public class GamePlayingState extends AbstractState {
 //		fontManager.getFont("font10").draw(batch, "X: " + Gdx.input.getX(), 50, 480 - 50);
 //		fontManager.getFont("font10").draw(batch, "Y: " + Gdx.input.getY(), 50, 480 - 70);
 		
-//		if(bullet != null)
-//			drawDebugLines();
-//		drawDebugRect();
+		//if(bullet != null)
+			//drawDebugLines();
+		//drawDebugRect();
 	}
 	
 	@Override
@@ -234,7 +257,11 @@ public class GamePlayingState extends AbstractState {
 		particleManager.dispose();
 		controlsBackground.dispose();
 		angleInput.dispose();
+		increaseAngleButton.dispose();
+		decreaseAngleButton.dispose();
 		forceInput.dispose();
+		increaseForceButton.dispose();
+		decreaseForceButton.dispose();
 		fireButton.dispose();
 		exitButton.dispose();
 	}
@@ -358,7 +385,7 @@ public class GamePlayingState extends AbstractState {
 				bulletCircle = bullet.getCircle();
 			if(bullet != null 
 					&& (line.intersectsRect(targetRect) 
-							/*|| bulletCircle.intersectsRect(target.getRect())*/)) {
+							|| bulletCircle.intersectsRect(target.getRect()))) {
 				explosionSound.play();
 				animationContainer.add(new ExplodeAnimation(bullet.getCircle().getX(), bullet.getCircle().getY()));
 				bullet.dispose();
