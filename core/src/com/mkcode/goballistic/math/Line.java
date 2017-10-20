@@ -36,7 +36,7 @@ public class Line {
 		return otherLineEndPoints[0].isOnLine(this) // the first end of the other line segment touches this line 
 				|| otherLineEndPoints[1].isOnLine(this) // the second end of the other line segment touches this line
 				// the endpoints of the other line are on different sides of this line
-				|| (otherLineEndPoints[0].isRightOfLine(this) != otherLineEndPoints[1].isRightOfLine(line)); 
+				|| (otherLineEndPoints[0].isRightOfLine(this) != otherLineEndPoints[1].isRightOfLine(this)); 
 	}
 	
 	/**

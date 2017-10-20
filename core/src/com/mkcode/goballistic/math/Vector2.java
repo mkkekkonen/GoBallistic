@@ -53,7 +53,7 @@ public class Vector2 {
 	}
 
 	public float cross(Vector2 v) {
-		return x - v.getY() - v.getX() * y;
+		return x * v.getY() - v.getX() * y;
 	}
 	
 	public static Vector2 polar(float angle, float len) {
@@ -126,7 +126,8 @@ public class Vector2 {
 		);
 		Vector2 adjustedPoint = new Vector2(x - line.getX1(), thisY - lineY1); // move point relative to the adjusted line
 		Vector2[] lineEndPoints = lineThroughOrigin.getEndPoints();
-		return lineEndPoints[1].cross(adjustedPoint); 	// cross product of the second line endpoint and 
+		float cross = lineEndPoints[1].cross(adjustedPoint); 	// cross product of the second line endpoint and 
 																// the point in question adjusted relative to it
+		return cross;
 	}
 }
