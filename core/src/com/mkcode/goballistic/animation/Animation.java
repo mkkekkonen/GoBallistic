@@ -33,8 +33,10 @@ public class Animation {
 	}
 	
 	public void render(SpriteBatch batch) {
-		Texture texture = frames.get(frameIndex); 
-		batch.draw(texture, MToPx.mToPx(centerPoint.getX()) - texture.getWidth() / 2, MToPx.mToPx(centerPoint.getY()) - texture.getHeight() / 2);
+		if(frameIndex > -1) {
+			Texture texture = frames.get(frameIndex); 
+			batch.draw(texture, MToPx.mToPx(centerPoint.getX()) - texture.getWidth() / 2, MToPx.mToPx(centerPoint.getY()) - texture.getHeight() / 2);
+		}
 	}
 	
 	public void dispose() {

@@ -114,14 +114,17 @@ public class Vector2 {
 	 * @return float the cross product of the adjusted line and point
 	 */
 	private float getLineThroughOriginCrossProduct(Line line) {
+		float thisY = Constants.WND_HEIGHT - y,
+				lineY1 = Constants.WND_HEIGHT - line.getY1(),
+				lineY2 = Constants.WND_HEIGHT - line.getY2();
 		// move line to origin
 		Line lineThroughOrigin = new Line(
 				0,
 				0,
 				line.getX2() - line.getX1(),
-				line.getY2() - line.getY1()
+				lineY2 - lineY1
 		);
-		Vector2 adjustedPoint = new Vector2(x - line.getX1(), y - line.getY1()); // move point relative to the adjusted line
+		Vector2 adjustedPoint = new Vector2(x - line.getX1(), thisY - lineY1); // move point relative to the adjusted line
 		Vector2[] lineEndPoints = lineThroughOrigin.getEndPoints();
 		return lineEndPoints[1].cross(adjustedPoint); 	// cross product of the second line endpoint and 
 																// the point in question adjusted relative to it
